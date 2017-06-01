@@ -1,0 +1,9 @@
+{
+  "name": "kendy-express-boilerplate",
+  "version": "0.1.0",
+  "description": "An awesome boilerplate for quick starting NodeJS web  development",
+  "main": "index.js",
+  "repository": "git@github.com:nhanhoangtrong/kendy-express-boilerplate.git",
+  "author": "Nhan Hoang <siege250294@gmail.com>",
+  "license": "MIT"
+}
