@@ -7,9 +7,10 @@
   "author": "Nhan Hoang <siege250294@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "start": "babel-node index.js",
+    "start": "node ./dist/index.js",
     "test": "mocha",
-    "watch": "nodemon -w app --exec \"babel-node ./index.js\"",
+    "watch": "nodemon -w src --exec \"babel-node src\"",
+    "build": "babel src -s -D -d dist",
     "lint": "eslint ."
   },
   "dependencies": {
