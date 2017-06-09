@@ -1,0 +1,32 @@
+{{!< base }}
+<div class="inner">
+    <header>
+        <h1>Account</h1>
+        <p>Edit your account informations</p>
+    </header>
+    <section>
+        <form method="post" action="">
+			<div class="row uniform">
+				<div class="6u 12u$(xsmall)">
+					<input type="text" name="firstName" id="firstName" value="{{user.firstName}}" placeholder="First Name">
+				</div>
+				<div class="6u$ 12u$(xsmall)">
+					<input type="text" name="lastName" id="lastName" value="{{user.lastName}}" placeholder="Last Name">
+				</div>
+				<div class="6u 12u$(small)">
+					<input type="password" id="password" name="password" placeholder="Password">
+				</div>
+                <div class="6u 12u$(small)">
+					<input type="password" id="repassword" name="repassword" placeholder="Re-type Password">
+                    <input type="text" id="_csrf" name="_csrf" value="{{_csrf}}" hidden style="display: none;">
+				</div>
+				<div class="12u$">
+					<ul class="actions">
+						<li><input type="submit" value="Update" class="special"></li>
+						<li><input type="reset" value="Reset"></li>
+					</ul>
+				</div>
+			</div>
+		</form>
+    </section>
+</div>

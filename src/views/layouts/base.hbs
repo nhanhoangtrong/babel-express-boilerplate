@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="title" content="{{title}}">
+        <meta name="description" content="{{description}}">
+        <title>{{ title }} - Kendy Express Boilerplate</title>
+        <!--[if lte IE 8]><script src="/static/home/js/ie/html5shiv.js"></script><![endif]-->
+		<link rel="stylesheet" href="/static/home/css/main.css" />
+		<!--[if lte IE 9]><link rel="stylesheet" href="/static/home/css/ie9.css" /><![endif]-->
+		<!--[if lte IE 8]><link rel="stylesheet" href="/static/home/css/ie8.css" /><![endif]-->
+        {{{block "pageStylesheet"}}}
+    </head>
+    <body>
+		<div id="wrapper">
+            <!-- Header -->
+            <header id="header">
+                <div class="inner">
+
+                    <!-- Logo -->
+                    <a href="/" class="logo">
+                        <span class="symbol"><img src="/static/home/images/logo.svg" alt="" /></span><span class="title">Kendy Express Boilerplate</span>
+                    </a>
+
+                    <!-- Nav -->
+                    <nav>
+                        <ul>
+                            <li><a href="#menu">Menu</a></li>
+                        </ul>
+                    </nav>
+
+                </div>
+            </header>
+            <!-- Menu -->
+            <nav id="menu">
+                <h2>Menu</h2>
+                {{#if user}}
+                <p>Hello, <strong><a href="/account" style="color: white;">{{user.firstName}}</a></strong></p>
+                {{/if}}
+                <ul>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/posts">Posts</a></li>
+                    <li><a href="/about">About Us</a></li>
+                    {{#if user}}
+                        {{#if user.isAdmin}}
+                        <li><a href="/admin">Admin</a></li>
+                        {{/if}}
+                    <li><a href="/logout">Logout</a></li>
+                    {{else}}
+                    <li><a href="/login">Login</a></li>
+                    {{/if}}
+                </ul>
+            </nav>
+            <div id="main">
+                <!--
+    				Flash messages allow you to display once-off status messages to users, e.g. form
+    				validation errors, success messages, etc
+    			-->
+    			{{#if messages}}
+                <ul class="inner alt">
+    				{{#if messages.info}}
+    				<li class="alert alert-info" style="color: blue;">
+    					<strong>Information!</strong> {{{messages.info}}}
+    				</li>
+    				{{/if}}
+    				{{#if messages.success}}
+    				<li class="alert alert-success" style="color: green;">
+                        <strong>Success!</strong> {{{messages.success}}}
+    				</li>
+    				{{/if}}
+    				{{#if messages.warning}}
+    				<li class="alert alert-warning" style="color: orange;">
+                        <strong>Warning!</strong> {{{messages.warning}}}
+    				</li>
+    				{{/if}}
+    				{{#if messages.error}}
+    				<li class="alert alert-danger" style="color: red;">
+                        <strong>Error!</strong> {{{messages.error}}}
+    				</li>
+    				{{/if}}
+                </ul>
+                {{/if}}
+    			<!-- The content block should contain the body of your template's content-->
+                {{{body}}}
+            </div>
+
+            <footer id="footer">
+                <div class="inner">
+                    <section>
+                        <h2>Get in touch</h2>
+                        <form method="post" action="/enquiry">
+                            <div class="field half first">
+                                <input type="text" name="name" id="name" placeholder="Name" />
+                            </div>
+                            <div class="field half">
+                                <input type="email" name="email" id="email" placeholder="Email" />
+                            </div>
+                            <div class="field">
+                                <input type="text" name="phone" id="phone" placeholder="Phone Number" />
+                            </div>
+                            <div class="field">
+                                <textarea name="content" id="content" placeholder="Content"></textarea>
+                            </div>
+                            <input type="text" id="_csrf" name="_csrf" value="{{_csrf}}" hidden style="display: none;">
+                            <ul class="actions">
+                                <li><input type="submit" value="Send" class="special" /></li>
+                            </ul>
+                        </form>
+                    </section>
+                    <section>
+                        <h2>Follow</h2>
+                        <ul class="icons">
+                            <li><a href="#" class="icon style2 fa-twitter"><span class="label">Twitter</span></a></li>
+                            <li><a href="#" class="icon style2 fa-facebook"><span class="label">Facebook</span></a></li>
+                            <li><a href="#" class="icon style2 fa-instagram"><span class="label">Instagram</span></a></li>
+                            <li><a href="#" class="icon style2 fa-dribbble"><span class="label">Dribbble</span></a></li>
+                            <li><a href="#" class="icon style2 fa-github"><span class="label">GitHub</span></a></li>
+                            <li><a href="#" class="icon style2 fa-500px"><span class="label">500px</span></a></li>
+                            <li><a href="#" class="icon style2 fa-phone"><span class="label">Phone</span></a></li>
+                            <li><a href="#" class="icon style2 fa-envelope-o"><span class="label">Email</span></a></li>
+                        </ul>
+                    </section>
+                    <ul class="copyright">
+                        <li>&copy; Kendy Hoang. All rights reserved</li><li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
+                    </ul>
+                </div>
+            </footer>
+		</div>
+
+        {{!--
+			//- jQuery is included by default, and required by both Bootstrap
+			//- and the jQuery UI. If you are not targeting IE8,
+			//- you can upgrade to 2.x, 3.x for better performance.
+		--}}
+        {{!--
+			//- Customise which Bootstrap javascript files are served by including
+			//- them specifically here
+		--}}
+        <!-- Scripts -->
+		<script src="/static/home/js/jquery.min.js"></script>
+		<script src="/static/home/js/skel.min.js"></script>
+		<script src="/static/home/js/util.js"></script>
+		<!--[if lte IE 8]><script src="assets/static/home/js/ie/respond.min.js"></script><![endif]-->
+		<script src="/static/home/js/main.js"></script>
+        {{{block "pageScripts"}}}
+    </body>
+</html>

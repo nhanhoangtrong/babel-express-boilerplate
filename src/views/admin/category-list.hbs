@@ -1,0 +1,117 @@
+{{!< admin }}
+<div class="row">
+    <div class="col-md-12 col-sm-12 col-xs-12">
+    	<div class="x_panel">
+    		<div class="x_title">
+    			<h2>All Post Categories<small>Show all post categories created by users</small></h2>
+    			<ul class="nav navbar-right panel_toolbox">
+    				<li><a href="/admin/category/new" class="btn btn-default">Add <i class="fa fa-plus"></i></a>
+    				</li>
+    			</ul>
+    			<div class="clearfix"></div>
+    		</div>
+    		<div class="x_content">
+                <input type="text" id="_csrf" name="_csrf" value="{{_csrf}}" hidden="hidden" style="display: none;">
+    			<table class="table table-hover">
+    				<thead>
+    					<tr>
+    						<th>#</th>
+    						<th>Name</th>
+    						<th>Slug</th>
+                            <th>Description</th>
+                            <th>Actions</th>
+    					</tr>
+    				</thead>
+    				<tbody>
+                        {{#each postCategories}}
+    					<tr id="{{_id}}">
+    						<th scope="row">{{inc @index}}</th>
+                            <td><a href="/admin/category/{{_id}}">{{name}}</a></td>
+    						<td><a href="/category/{{slug}}">{{slug}}</a></td>
+    						<td>{{description}}</td>
+                            <td>
+                                <a href="/admin/category/{{_id}}" class="btn btn-default"><i class="fa fa-gear"></i></a>
+                                <button class="btn btn-default" onclick="confirmRemoveDialog('{{_id}}', '{{name}}')"><i class="fa fa-trash"></i></button>
+                            </td>
+    					</tr>
+                        {{/each}}
+    				</tbody>
+    			</table>
+                <div id="removeConfirmDialog" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+                    <div class="modal-dialog modal-md">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span>
+                          </button>
+                          <h4 class="modal-title">Do you want to remove this category?</h4>
+                        </div>
+                        <div class="modal-body">
+                          <h4>Ops! You try to remove category <strong id="removingCatName"></strong>!</h4>
+                          <p>Click Delete to remove it now or Cancel to go back.</p>
+                          <input id="removingCatId" hidden style="display: none;">
+                        </div>
+                        <div class="modal-footer">
+                          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                          <button type="button" class="btn btn-danger" onclick="removeCat()">Delete</button>
+                        </div>
+                      </div>
+                    </div>
+                </div>
+    		</div>
+    	</div>
+    </div>
+</div>
+{{#contentFor "pageScripts"}}
+<script>
+    var csrfToken = $('#_csrf').val();
+    function confirmRemoveDialog(catId, catName) {
+        $('#removingCatId').val(catId);
+        $('#removingCatName').html(catName);
+        $('#removeConfirmDialog').modal();
+    }
+    function removeCat() {
+        var catId = $('#removingCatId').val();
+        if (catId) {
+            var data = {
+                _id: catId,
+                _csrf: csrfToken,
+            };
+            $.ajax({
+                url: '/admin/category/remove',
+                type: 'POST',
+                data: data,
+                processData: true,
+                success: function(res) {
+                    $('#removeConfirmDialog').modal('hide');
+                    if (res.status === 'success') {
+                        $('#' + catId).remove();
+                        $('#messages').html(
+                            '<div class="alert alert-success alert-dismissible fade in" role="alert">' +
+                                '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>' +
+                                '<strong>Success! </strong>' + res.message +
+                            '</div>'
+                        );
+                    } else {
+                        // show error
+                        $('#messages').html(
+                            '<div class="alert alert-danger alert-dismissible fade in" role="alert">' +
+                                '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>' +
+                                '<strong>Error! </strong>' + res.message +
+                            '</div>'
+                        );
+                    }
+                },
+                error: function(err) {
+                    $('#removeConfirmDialog').modal('hide');
+                    $('#messages').html(
+                        '<div class="alert alert-danger alert-dismissible fade in" role="alert">' +
+                            '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>' +
+                            '<strong>Error! </strong>' + err.message +
+                        '</div>'
+                    );
+                }
+            });
+        }
+    }
+</script>
+{{/contentFor}}

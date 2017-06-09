@@ -1,0 +1,28 @@
+{{!< base }}
+
+<div class="inner">
+    <header>
+        <h1>Login</h1>
+        <p>Filling these fields to login</p>
+    </header>
+    <section class="box">
+        <form action="" method="post">
+            <div class="row uniform">
+                <div class="6u 12u$">
+            		<input type="email" name="email" id="email" value="" placeholder="Email">
+            	</div>
+                <div class="6u 12u$">
+            		<input type="password" name="password" id="password" value="" placeholder="Password">
+            	</div>
+                <div class="6u 12u$">
+        			<input type="checkbox" id="remember" name="remember">
+        			<label for="remember">Remember me</label>
+                    <input type="_csrf" id="_csrf" name="_csrf" value="{{{_csrf}}}" hidden>
+        		</div>
+                <div class="6u 12u$">
+                    <input type="submit" value="Login" class="special">
+                </div>
+            </div>
+        </form>
+    </section>
+</div>

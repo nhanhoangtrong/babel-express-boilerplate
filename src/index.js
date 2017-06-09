@@ -1,8 +1,7 @@
 import app from './app'
 
-const port = process.env.PORT || 8080
-const host = process.env.HOST || 'localhost'
+const port = app.get('port')
 
-app.listen(port, host, function() {
-    console.log(`Server is running on ${host}:${port}`)
+app.listen(port, function() {
+    console.log(`Server is running on ${port}`)
 })

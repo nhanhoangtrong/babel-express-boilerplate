@@ -1,0 +1,49 @@
+{{!< admin }}
+
+<div class="row">
+	<div class="col-md-12 col-sm-12 col-xs-12">
+		<div class="x_panel">
+			<div class="x_title">
+				<h2><i class="fa fa-align-left"></i> <a href="/admin/category/all">All Post Categories</a> / {{title}}</h2>
+				<div class="clearfix"></div>
+			</div>
+			<div class="x_content">
+                 <form id="edit-category-form" action="" method="post" data-parsley-validate="" class="form-horizontal form-label-left" novalidate="">
+					<div class="form-group">
+						<label class="control-label col-md-3 col-sm-3 col-xs-12" for="name">Name <span class="required">*</span>
+						</label>
+						<div class="col-md-6 col-sm-6 col-xs-12">
+							<input type="text" id="name" name="name" value="{{postCategory.name}}"required="required" class="form-control col-md-7 col-xs-12">
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="control-label col-md-3 col-sm-3 col-xs-12" for="slug">Slug <span class="required">*</span>
+						</label>
+						<div class="col-md-6 col-sm-6 col-xs-12">
+							<input type="text" id="slug" name="slug" value="{{postCategory.slug}}" required="required" class="form-control col-md-7 col-xs-12">
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="control-label col-md-3 col-sm-3 col-xs-12" for="description">Description</label>
+						<div class="col-md-6 col-sm-6 col-xs-12">
+							<input id="description" name="description" value="{{postCategory.description}}" class="form-control col-md-7 col-xs-12" type="text">
+						</div>
+					</div>
+					<div class="ln_solid"></div>
+					<div class="form-group">
+						<div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
+							<input id="_csrf" name="_csrf" value="{{_csrf}}" type="text" style="display: none;" hidden>
+							<a href="/admin/category/all" class="btn btn-primary">Cancel</a>
+							<button type="submit" class="btn btn-success">Submit</button>
+						</div>
+					</div>
+
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+
+{{#contentFor "pageScripts"}}
+
+{{/contentFor}}

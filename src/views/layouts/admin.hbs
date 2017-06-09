@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <title>{{title}} - Kendy Express Boilerplate Admin</title>
+
+        <!-- Bootstrap -->
+        <link href="/static/admin/css/bootstrap.min.css" rel="stylesheet">
+        <!-- Font Awesome -->
+        <link href="/static/admin/css/font-awesome.min.css" rel="stylesheet">
+        <!-- NProgress -->
+        <link href="/static/admin/css/nprogress.css" rel="stylesheet">
+        <!-- iCheck -->
+        <link href="/static/admin/css/green.css" rel="stylesheet">
+        <!-- switchery -->
+        <link href="/static/admin/css/switchery.min.css" rel="stylesheet">
+
+        <!-- bootstrap-progressbar -->
+        <link href="/static/admin/css/bootstrap-progressbar-3.3.4.min.css" rel="stylesheet">
+        <!-- JQVMap -->
+        <link href="/static/admin/css/jqvmap.min.css" rel="stylesheet"/>
+        <!-- bootstrap-daterangepicker -->
+        <link href="/static/admin/css/daterangepicker.css" rel="stylesheet">
+
+        {{{block "pageStyles"}}}
+
+        <!-- Custom Theme Style -->
+        <link href="/static/admin/css/custom.min.css" rel="stylesheet">
+    </head>
+    <body class="nav-md">
+
+        <div class="container body">
+            <div class="main_container">
+                <div class="col-md-3 left_col">
+                    <div class="left_col scroll-view">
+                        <div class="navbar nav_title" style="border: 0;">
+                            <a href="/admin" class="site_title"><i class="fa fa-paw"></i> <span>Kendy Express Boilerplate</span></a>
+                        </div>
+
+                        <div class="clearfix"></div>
+
+                        <!-- menu profile quick info -->
+                        <div class="profile clearfix">
+                            <div class="profile_pic">
+                                <img src="/static/admin/images/img.jpg" alt="..." class="img-circle profile_img">
+                            </div>
+                            <div class="profile_info">
+                                <span>Welcome,</span>
+                                <h2>{{user.firstName}}</h2>
+                            </div>
+                        </div>
+                        <!-- /menu profile quick info -->
+
+                        <br />
+
+                        <!-- sidebar menu -->
+                        <div id="sidebar-menu" class="main_menu_side hidden-print main_menu">
+                            <div class="menu_section">
+                                <h3>General</h3>
+                                <ul class="nav side-menu">
+                                    {{#equal section "home"}}
+                                    <li class="active">
+                                    {{else}}
+                                    <li>
+                                    {{/equal}}
+                                    <a><i class="fa fa-home"></i> Home <span class="fa fa-chevron-down"></span></a>
+                                        <ul class="nav child_menu">
+                                            <li><a href="/admin">Dashboard</a></li>
+                                            <li><a href="/admin">Statistics</a></li>
+                                        </ul>
+                                    </li>
+                                    {{#equal section "post"}}
+                                    <li class="active">
+                                    {{else}}
+                                    <li>
+                                    {{/equal}}<a><i class="fa fa-edit"></i> Posts <span class="fa fa-chevron-down"></span></a>
+                                        <ul class="nav child_menu">
+                                            <li><a href="/admin/post/all">All Posts</a></li>
+                                            <li><a href="/admin/post/new">Add New</a></li>
+                                        </ul>
+                                    </li>
+                                    {{#equal section "category"}}
+                                    <li class="active">
+                                    {{else}}
+                                    <li>
+                                    {{/equal}}<a><i class="fa fa-archive"></i> Post Categories <span class="fa fa-chevron-down"></span></a>
+                                        <ul class="nav child_menu">
+                                            <li><a href="/admin/category/all">All Categories</a></li>
+                                            <li><a href="/admin/category/new">Add New</a></li>
+                                        </ul>
+                                    </li>
+                                    {{#equal section "enquiry"}}
+                                    <li class="active">
+                                    {{else}}
+                                    <li>
+                                    {{/equal}}<a><i class="fa fa-question-circle-o"></i> Enquiries <span class="fa fa-chevron-down"></span></a>
+                                        <ul class="nav child_menu">
+                                            <li><a href="/admin/enquiry/all">All Enquiries</a></li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="menu_section">
+                                <h3>User Management</h3>
+                                <ul class="nav side-menu">
+                                    {{#equal section "users"}}
+                                    <li class="active">
+                                    {{else}}
+                                    <li>
+                                    {{/equal}}<a><i class="fa fa-user-circle-o"></i> Users <span class="fa fa-chevron-down"></span></a>
+                                    <ul class="nav child_menu">
+                                        <li><a href="/admin/user/all">All Users</a></li>
+                                        <li><a href="/admin/user/new">Add New</a></li>
+                                    </ul>
+                                    </li>
+                                    {{#equal section "settings"}}
+                                    <li class="active">
+                                    {{else}}
+                                    <li>
+                                    {{/equal}}<a><i class="fa fa-sliders"></i> Settings <span class="fa fa-chevron-down"></span></a>
+                                        <ul class="nav child_menu">
+                                            <li><a href="/admin/settings/general">General</a></li>
+                                            <li><a href="/admin/settings/reading">Reading</a></li>
+                                            <li><a href="/admin/settings/discussion">Discussion</a></li>
+                                            <li><a href="/admin/settings/i18n">Internationalization</a></li>
+                                            <li><a href="/admin/settings/l10n">Localization</a></li>
+                                        </ul>
+                                    </li>
+                                    {{#equal section "appearance"}}
+                                    <li class="active">
+                                    {{else}}
+                                    <li>
+                                    {{/equal}}<a><i class="fa fa-magic"></i> Appearance <span class="fa fa-chevron-down"></span></a>
+                                        <ul class="nav child_menu">
+                                            <li><a href="/admin/appearance/themes">Themes</a></li>
+                                            <li><a href="/admin/appearance/menus">Menus</a></li>
+                                            <li><a href="/admin/appearance/header">Header</a></li>
+                                            <li><a href="/admin/appearance/footer">Footer</a></li>
+                                        </ul>
+                                    </li>
+                                    {{#equal section "plugin"}}
+                                    <li class="active">
+                                    {{else}}
+                                    <li>
+                                    {{/equal}}<a><i class="fa fa-sitemap"></i> Plugins <span class="label label-success pull-right">Coming Soon</span></span></a>
+                                    </li>
+                                </ul>
+                            </div>
+
+                        </div>
+                        <!-- /sidebar menu -->
+
+                        <!-- /menu footer buttons -->
+                        <div class="sidebar-footer hidden-small">
+                            <a data-toggle="tooltip" data-placement="top" title="Settings">
+                                <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
+                            </a>
+                            <a data-toggle="tooltip" data-placement="top" title="FullScreen">
+                                <span class="glyphicon glyphicon-fullscreen" aria-hidden="true"></span>
+                            </a>
+                            <a data-toggle="tooltip" data-placement="top" title="Lock">
+                                <span class="glyphicon glyphicon-eye-close" aria-hidden="true"></span>
+                            </a>
+                            <a data-toggle="tooltip" data-placement="top" title="Logout" href="/admin/logout">
+                                <span class="glyphicon glyphicon-off" aria-hidden="true"></span>
+                            </a>
+                        </div>
+                        <!-- /menu footer buttons -->
+                    </div>
+                </div>
+
+                <!-- top navigation -->
+                <div class="top_nav">
+                    <div class="nav_menu">
+                        <nav>
+                            <div class="nav toggle">
+                                <a id="menu_toggle"><i class="fa fa-bars"></i></a>
+                            </div>
+
+                            <ul class="nav navbar-nav navbar-right">
+                                <li class="">
+                                    <a href="javascript:;" class="user-profile dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                                        <img src="/static/admin/images/img.jpg" alt="">{{user.firstName}} {{user.lastName}}
+                                        <span class=" fa fa-angle-down"></span>
+                                    </a>
+                                    <ul class="dropdown-menu dropdown-usermenu pull-right">
+                                        <li><a href="/account"> Profile</a></li>
+                                        <li>
+                                            <a href="javascript:;">
+                                                <span class="badge bg-red pull-right">50%</span>
+                                                <span>Settings</span>
+                                            </a>
+                                        </li>
+                                        <li><a href="javascript:;">Help</a></li>
+                                        <li><a href="/admin/logout"><i class="fa fa-sign-out pull-right"></i> Log Out</a></li>
+                                    </ul>
+                                </li>
+
+                                <li role="presentation" class="dropdown">
+                                    <a href="javascript:;" class="dropdown-toggle info-number" data-toggle="dropdown" aria-expanded="false">
+                                        <i class="fa fa-envelope-o"></i>
+                                        <span class="badge bg-green">0</span>
+                                    </a>
+                                    <ul id="menu1" class="dropdown-menu list-unstyled msg_list" role="menu">
+                                        <li>
+                                            <a>
+                                                <span class="image"><img src="/static/admin/images/img.jpg" alt="Profile Image" /></span>
+                                                <span>
+                                                    <span>John Smith</span>
+                                                    <span class="time">3 mins ago</span>
+                                                </span>
+                                                <span class="message">
+                                                    Film festivals used to be do-or-die moments for movie makers. They were where...
+                                                </span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a>
+                                                <span class="image"><img src="/static/admin/images/img.jpg" alt="Profile Image" /></span>
+                                                <span>
+                                                    <span>John Smith</span>
+                                                    <span class="time">3 mins ago</span>
+                                                </span>
+                                                <span class="message">
+                                                    Film festivals used to be do-or-die moments for movie makers. They were where...
+                                                </span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a>
+                                                <span class="image"><img src="/static/admin/images/img.jpg" alt="Profile Image" /></span>
+                                                <span>
+                                                    <span>John Smith</span>
+                                                    <span class="time">3 mins ago</span>
+                                                </span>
+                                                <span class="message">
+                                                    Film festivals used to be do-or-die moments for movie makers. They were where...
+                                                </span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a>
+                                                <span class="image"><img src="/static/admin/images/img.jpg" alt="Profile Image" /></span>
+                                                <span>
+                                                    <span>John Smith</span>
+                                                    <span class="time">3 mins ago</span>
+                                                </span>
+                                                <span class="message">
+                                                    Film festivals used to be do-or-die moments for movie makers. They were where...
+                                                </span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <div class="text-center">
+                                                <a>
+                                                    <strong>See All Alerts</strong>
+                                                    <i class="fa fa-angle-right"></i>
+                                                </a>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+                <!-- /top navigation -->
+                <div class="right_col" role="main">
+                    <!-- page messages -->
+                    <div id="messages">
+                        {{#if messages}}
+                            {{#if messages.success}}
+                            <div class="alert alert-success alert-dismissible fade in" role="alert">
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span>
+                                </button>
+                                <strong>Success!</strong> {{messages.success}}
+                            </div>
+                            {{/if}}
+
+                            {{#if messages.info}}
+                            <div class="alert alert-info alert-dismissible fade in" role="alert">
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span>
+                                </button>
+                                <strong>Information!</strong> {{messages.info}}
+                            </div>
+                            {{/if}}
+
+                            {{#if messages.warning}}
+                            <div class="alert alert-warning alert-dismissible fade in" role="alert">
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span>
+                                </button>
+                                <strong>Warning!</strong> {{messages.warning}}
+                            </div>
+                            {{/if}}
+
+                            {{#if messages.error}}
+                            <div class="alert alert-danger alert-dismissible fade in" role="alert">
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span>
+                                </button>
+                                <strong>Error!</strong> {{messages.error}}
+                            </div>
+                            {{/if}}
+                        {{/if}}
+                    </div>
+                    <!-- /page messages -->
+
+                    <!-- page content -->
+                    {{{body}}}
+                    <!-- /page content -->
+                </div>
+                <!-- footer content -->
+                <footer>
+                    <div class="pull-right">
+                        Gentelella - Bootstrap Admin Template by <a href="https://colorlib.com">Colorlib</a>
+                    </div>
+                    <div class="clearfix"></div>
+                </footer>
+                <!-- /footer content -->
+            </div>
+        </div>
+
+        <!-- jQuery -->
+        <script src="/static/admin/js/jquery.min.js"></script>
+        <!-- Bootstrap -->
+        <script src="/static/admin/js/bootstrap.min.js"></script>
+        <!-- FastClick -->
+        <script src="/static/admin/js/fastclick.js"></script>
+        <!-- NProgress -->
+        <script src="/static/admin/js/nprogress.js"></script>
+        <!-- Chart.js -->
+        <script src="/static/admin/js/Chart.min.js"></script>
+        <!-- gauge.js -->
+        <script src="/static/admin/js/gauge.min.js"></script>
+        <!-- bootstrap-progressbar -->
+        <script src="/static/admin/js/bootstrap-progressbar.min.js"></script>
+        <!-- iCheck -->
+        <script src="/static/admin/js/icheck.min.js"></script>
+        <!-- Skycons -->
+        <script src="/static/admin/js/skycons.js"></script>
+        <!-- Flot -->
+        <script src="/static/admin/js/jquery.flot.js"></script>
+        <script src="/static/admin/js/jquery.flot.pie.js"></script>
+        <script src="/static/admin/js/jquery.flot.time.js"></script>
+        <script src="/static/admin/js/jquery.flot.stack.js"></script>
+        <script src="/static/admin/js/jquery.flot.resize.js"></script>
+        <!-- Flot plugins -->
+        <script src="/static/admin/js/jquery.flot.orderBars.js"></script>
+        <script src="/static/admin/js/jquery.flot.spline.min.js"></script>
+        <script src="/static/admin/js/curvedLines.js"></script>
+        <!-- DateJS -->
+        <script src="/static/admin/js/date.js"></script>
+        <!-- JQVMap -->
+        <script src="/static/admin/js/jquery.vmap.js"></script>
+        <script src="/static/admin/js/jquery.cookie.js"></script>
+        <script src="/static/admin/js/jquery.vmap.world.js"></script>
+        <script src="/static/admin/js/jquery.vmap.sampledata.js"></script>
+        <!-- bootstrap-daterangepicker -->
+        <script src="/static/admin/js/moment.min.js"></script>
+        <script src="/static/admin/js/daterangepicker.js"></script>
+
+        {{{block "pageScripts"}}}
+
+        <!-- Custom Theme Scripts -->
+        <script src="/static/admin/js/smartresize.js"></script>
+        <script src="/static/admin/js/custom.js"></script>
+
+        {{{block "inlineScripts"}}}
+
+    </body>
+</html>

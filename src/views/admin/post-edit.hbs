@@ -1,0 +1,221 @@
+{{!< admin }}
+
+<div class="row">
+	<div class="col-md-12 col-sm-12 col-xs-12">
+		<div class="x_panel">
+			<div class="x_title">
+				<h2><i class="fa fa-align-left"></i> <a href="/admin/post/all">All Posts</a> / {{title}}</h2>
+				<div class="clearfix"></div>
+			</div>
+			<div class="x_content">
+                <form id="edit-post-form" action="" method="post" data-parsley-validate="" class="form-horizontal form-label-left" novalidate="">
+					<div class="form-group">
+						<label class="control-label col-md-3 col-sm-3 col-xs-12" for="title">Title <span class="required">*</span>
+						</label>
+						<div class="col-md-6 col-sm-6 col-xs-12">
+							<input type="text" id="title" name="title" value="{{post.title}}"required="required" class="form-control col-md-7 col-xs-12">
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="control-label col-md-3 col-sm-3 col-xs-12" for="slug">Slug <span class="required">*</span>
+						</label>
+						<div class="col-md-6 col-sm-6 col-xs-12">
+							<input type="text" id="slug" name="slug" value="{{post.slug}}" required="required" class="form-control col-md-7 col-xs-12">
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="middle-name" class="control-label col-md-3 col-sm-3 col-xs-12" for="author">Author</label>
+						<div class="col-md-6 col-sm-6 col-xs-12">
+                            <select id="author" name="author" class="form-control" required="required">
+                                {{#each users}}
+                                <option value="{{_id}}">{{firstName}} {{lastName}}</option>
+                                {{/each}}
+                            </select>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="control-label col-md-3 col-sm-3 col-xs-12" for="isPublished">Publish Status</label>
+						<div class="col-md-6 col-sm-6 col-xs-12">
+							<input type="checkbox" id="isPublished" id="isPublished" name="isPublished" {{#if post.isPublished}}checked{{/if}} hidden>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="control-label col-md-3 col-sm-3 col-xs-12" for="publishedAt">Publish Date
+						</label>
+						<div class="col-md-6 col-sm-6 col-xs-12">
+                            <div class="control-group">
+                              <div class="controls">
+                                <div class="input-prepend input-group">
+                                  <span class="add-on input-group-addon"><i class="glyphicon glyphicon-calendar fa fa-calendar"></i></span>
+                                  <input type="text" name="publishedAt" id="publishedAt" class="form-control" value="{{millisecondsToDate post.publishedAt}}">
+                                </div>
+                              </div>
+                            </div>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="control-label col-md-3 col-sm-3 col-xs-12" for="description">Short Description<span class="required">*</span>
+						</label>
+						<div class="col-md-6 col-sm-6 col-xs-12">
+							<textarea id="description" name="description" class="resizable_textarea form-control" placeholder="Post short description...">{{{post.description}}}</textarea>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="control-label col-md-3 col-sm-3 col-xs-12" for="categories">Categories<span class="required">*</span>
+						</label>
+						<div class="col-md-6 col-sm-6 col-xs-12">
+							<select id="categories" name="categories[]" class="select2_multiple form-control" multiple="multiple" value="{{post.categories}}">
+								{{#each postCategories}}
+								<option value="{{_id}}">{{name}}</option>
+								{{/each}}
+	                    	</select>
+						</div>
+					</div>
+                    <div class="x_panel">
+                        <div class="x_title">
+                            <h2>Post Content</h2>
+                            <div class="clearfix"></div>
+                        </div>
+                        <div class="x_content">
+                            <div id="alerts"></div>
+                            <div class="btn-toolbar editor" data-role="editor-toolbar" data-target="#editor-one">
+                                <div class="btn-group">
+                                    <a class="btn dropdown-toggle" data-toggle="dropdown" title="Font"><i class="fa fa-font"></i><b class="caret"></b></a>
+                                    <ul class="dropdown-menu">
+                                    </ul>
+                                </div>
+
+                                <div class="btn-group">
+                                    <a class="btn dropdown-toggle" data-toggle="dropdown" title="Font Size"><i class="fa fa-text-height"></i>&nbsp;<b class="caret"></b></a>
+                                    <ul class="dropdown-menu">
+                                        <li>
+                                            <a data-edit="fontSize 5">
+                                                <p style="font-size:17px">Huge</p>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a data-edit="fontSize 3">
+                                                <p style="font-size:14px">Normal</p>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a data-edit="fontSize 1">
+                                                <p style="font-size:11px">Small</p>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+
+                                <div class="btn-group">
+                                    <a class="btn" data-edit="bold" title="Bold (Ctrl/Cmd+B)"><i class="fa fa-bold"></i></a>
+                                    <a class="btn" data-edit="italic" title="Italic (Ctrl/Cmd+I)"><i class="fa fa-italic"></i></a>
+                                    <a class="btn" data-edit="strikethrough" title="Strikethrough"><i class="fa fa-strikethrough"></i></a>
+                                    <a class="btn" data-edit="underline" title="Underline (Ctrl/Cmd+U)"><i class="fa fa-underline"></i></a>
+                                </div>
+
+                                <div class="btn-group">
+                                    <a class="btn" data-edit="insertunorderedlist" title="Bullet list"><i class="fa fa-list-ul"></i></a>
+                                    <a class="btn" data-edit="insertorderedlist" title="Number list"><i class="fa fa-list-ol"></i></a>
+                                    <a class="btn" data-edit="outdent" title="Reduce indent (Shift+Tab)"><i class="fa fa-dedent"></i></a>
+                                    <a class="btn" data-edit="indent" title="Indent (Tab)"><i class="fa fa-indent"></i></a>
+                                </div>
+
+                                <div class="btn-group">
+                                    <a class="btn" data-edit="justifyleft" title="Align Left (Ctrl/Cmd+L)"><i class="fa fa-align-left"></i></a>
+                                    <a class="btn" data-edit="justifycenter" title="Center (Ctrl/Cmd+E)"><i class="fa fa-align-center"></i></a>
+                                    <a class="btn" data-edit="justifyright" title="Align Right (Ctrl/Cmd+R)"><i class="fa fa-align-right"></i></a>
+                                    <a class="btn" data-edit="justifyfull" title="Justify (Ctrl/Cmd+J)"><i class="fa fa-align-justify"></i></a>
+                                </div>
+
+                                <div class="btn-group">
+                                    <a class="btn dropdown-toggle" data-toggle="dropdown" title="Hyperlink"><i class="fa fa-link"></i></a>
+                                    <div class="dropdown-menu input-append">
+                                        <input class="span2" placeholder="URL" type="text" data-edit="createLink">
+                                        <button class="btn" type="button">Add</button>
+                                    </div>
+                                    <a class="btn" data-edit="unlink" title="Remove Hyperlink"><i class="fa fa-cut"></i></a>
+                                </div>
+
+                                <div class="btn-group">
+									<a class="btn" title="" id="pictureBtn" data-original-title="Insert picture (or just drag &amp; drop)"><i class="fa fa-picture-o"></i>
+									<input type="file" data-role="magic-overlay" data-target="#pictureBtn" data-edit="insertImage" style="opacity: 0; position: absolute; top: 0px; left: 0px; width: 42px; height: 30px;cursor:pointer;">
+									</a>
+
+                                </div>
+
+                                <div class="btn-group">
+                                    <a class="btn" data-edit="undo" title="Undo (Ctrl/Cmd+Z)"><i class="fa fa-undo"></i></a>
+                                    <a class="btn" data-edit="redo" title="Redo (Ctrl/Cmd+Y)"><i class="fa fa-repeat"></i></a>
+                                </div>
+                            </div>
+
+                            <div id="content-editor" class="editor-wrapper placeholderText" contenteditable="true">
+                                {{{post.content}}}
+                            </div>
+							<textarea id="content"  name="content" hidden></textarea>
+                        </div>
+                    </div>
+					<div class="ln_solid"></div>
+					<div class="form-group">
+						<div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
+							<input id="_csrf" name="_csrf" value="{{_csrf}}" type="text" style="display: none;" hidden>
+							<a href="/admin/post/all" class="btn btn-primary">Cancel</a>
+							<a class="btn btn-success" onclick="submitPost(this, '{{post._id}}')">Submit</a>
+						</div>
+					</div>
+
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+
+{{#contentFor "pageScripts"}}
+<script src="/static/admin/js/bootstrap-wysiwyg.min.js"></script>
+<script src="/static/admin/js/jquery.hotkeys.js"></script>
+<script src="/static/admin/js/prettify.min.js"></script>
+<script src="/static/admin/js/jquery.tagsinput.js"></script>
+<script src="/static/admin/js/switchery.min.js"></script>
+<script src="/static/admin/js/select2.full.min.js"></script>
+<script src="/static/admin/js/parsley.min.js"></script>
+<script src="/static/admin/js/autosize.min.js"></script>
+<script src="/static/admin/js/jquery.autocomplete.min.js"></script>
+<script src="/static/admin/js/starrr.js"></script>
+{{/contentFor}}
+
+{{#contentFor "inlineScripts"}}
+<script>
+{{#equal post.categories.length  0}}
+var selectedCategories = [];
+{{else}}
+var selectedCategories = [
+	{{#each post.categories as |catId|}}
+	'{{catId}}',
+	{{/each}}
+];
+{{/equal}}
+$('#categories').val(selectedCategories);
+
+$('#content-editor').wysiwyg();
+
+var isPublishedSelector = document.getElementById('isPublished');
+var switchery = new Switchery(isPublishedSelector, {
+	color: '#26B99A'
+});
+$('#publishedAt').daterangepicker({
+    singleDatePicker: true,
+    timePicker: true,
+    locale: {
+        format: 'MM/DD/YYYY h:mm A'
+    }
+});
+function submitPost(e, postId) {
+	console.log('postId', postId)
+	// console.log($('#content-editor').html())
+	$('#content').html($('#content-editor').html())
+	// document.getElementById('edit-post-form').elements['categories'] = $('#categories').val()
+	$('#edit-post-form').submit()
+	// console.log($('#categories').val())
+}
+</script>
+{{/contentFor}}

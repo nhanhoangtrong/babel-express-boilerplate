@@ -1,0 +1,48 @@
+{{!< admin }}
+<div class="row">
+    <div class="col-md-12 col-sm-12 col-xs-12">
+    	<div class="x_panel">
+    		<div class="x_title">
+    			<h2>All Enquiries<small>Show all enquiries sent by guests</small></h2>
+    			<div class="clearfix"></div>
+    		</div>
+    		<div class="x_content">
+    			<table class="table table-hover">
+    				<thead>
+    					<tr>
+    						<th>#</th>
+    						<th>Name</th>
+    						<th>Email</th>
+                            <th>Phone</th>
+                            <th>Created At</th>
+                            <th>Content</th>
+                            <th>Actions</th>
+    					</tr>
+    				</thead>
+    				<tbody>
+                        {{#each enquiries}}
+    					<tr>
+    						<th scope="row">{{inc @index}}</th>
+                            <td>{{name}}</td>
+                            <td>{{email}}</td>
+    						<td>{{phone}}</td>
+                            <td>{{millisecondsToDate createdAt}}</td>
+                            <td>{{content}}</td>
+                            <td>
+                                <button class="btn btn-default" onclick="removeEnquiry('{{_id}}')"><i class="fa fa-trash"></i></button>
+                            </td>
+    					</tr>
+                        {{/each}}
+    				</tbody>
+    			</table>
+    		</div>
+    	</div>
+    </div>
+</div>
+{{#contentFor "pageScripts"}}
+<script>
+    function removeEnquiry(id) {
+        console.log('remove ' + id)
+    }
+</script>
+{{/contentFor}}
