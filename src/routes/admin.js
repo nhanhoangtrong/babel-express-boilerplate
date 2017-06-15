@@ -9,7 +9,7 @@ import * as enquiryPromises from '../promises/enquiry'
 
 var storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, resolve(__dirname, '../static/uploads'))
+        cb(null, 'static/uploads/')
     },
     filename: function (req, file, cb) {
         const nameParts = file.originalname.split('.')

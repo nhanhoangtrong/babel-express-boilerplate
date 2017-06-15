@@ -120,7 +120,7 @@ app.use(lusca.xframe('SAMEORIGIN'))
 app.use(lusca.xssProtection(true))
 
 // Serve static files
-app.use('/static', express.static(path.resolve(__dirname, 'static')))
+app.use('/static', express.static(path.resolve(__dirname, '../static')))
 
 /**
  * Registering routes goes here

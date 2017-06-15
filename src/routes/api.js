@@ -28,11 +28,6 @@ router.use(bodyParser.json())
             .then(onApiSuccess(res))
             .catch(onApiError(res))
     })
-    .post('/user', function(req, res, next) {
-        userPromises.postNewUser(req.body)
-            .then(onApiSuccess(res))
-            .catch(onApiError(res))
-    })
     // /post route
     .get('/post/category/:catId', function(req, res, next) {
         postPromises.getPostsByCategory(req.params.catId)
@@ -44,29 +39,9 @@ router.use(bodyParser.json())
             .then(onApiSuccess(res))
             .catch(onApiError(res))
     })
-    .post('/post', function(req, res, next) {
-        postPromises.postNewPost(req.body)
-            .then(onApiSuccess(res))
-            .catch(onApiError(res))
-    })
-    .put('/post', function(req, res, next) {
-        postPromises.updatePost(req.body)
-            .then(onApiSuccess(res))
-            .catch(onApiError(res))
-    })
     // /category route
     .get('/category/:catSlug', function(req, res, next) {
         postCategoryPromises.getPostCategoryBySlug(req.params.catSlug)
-            .then(onApiSuccess(res))
-            .catch(onApiError(res))
-    })
-    .post('/category', function(req, res, next) {
-        postCategoryPromises.postNewPostCategory(req.body)
-            .then(onApiSuccess(res))
-            .catch(onApiError(res))
-    })
-    .put('/category', function(req, res, next) {
-        postCategoryPromises.updatePostCategory(req.body)
             .then(onApiSuccess(res))
             .catch(onApiError(res))
     })
