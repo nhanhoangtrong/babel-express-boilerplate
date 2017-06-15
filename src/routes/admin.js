@@ -1,9 +1,32 @@
 import { Router } from 'express'
+import { resolve } from 'path'
 import passport from 'passport'
+import multer from 'multer'
 import * as postPromises from '../promises/post'
 import * as userPromises from '../promises/user'
 import * as categoryPromises from '../promises/postCategory'
 import * as enquiryPromises from '../promises/enquiry'
+
+var storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, resolve(__dirname, '../static/uploads'))
+    },
+    filename: function (req, file, cb) {
+        const nameParts = file.originalname.split('.')
+        const ext = nameParts[nameParts.length - 1]
+
+        cb(null, 'feature-image-' + Date.now() + '.' + ext);
+    }
+})
+
+const uploads = multer({
+    storage,
+    limits: {
+        fileSize: 1024 * 1024,
+    }
+})
+
+const uploadImage = uploads.single('uploadImage')
 
 const router = Router()
 
@@ -59,6 +82,35 @@ router
             req.flash('error', 'Login errors')
             res.redirect('/admin/login')
         }
+    })
+    /**
+     * Upload media section
+     */
+    .post('/upload/image', function(req, res, next) {
+        uploadImage(req, res, function(err) {
+            if (err) {
+                res.json({
+                    status: 'error',
+                    code: 500,
+                    message: err.message,
+                })
+            } else {
+                if (req.file) {
+                    res.json({
+                        status: 'success',
+                        code: 200,
+                        message: 'Image has been uploaded successfully!',
+                        url: `/static/uploads/${req.file.filename}`,
+                    })
+                } else {
+                    res.json({
+                        status: 'error',
+                        code: 500,
+                        message: 'There are some errors during uploading process!',
+                    })
+                }
+            }
+        })
     })
     /**
      * Posts section

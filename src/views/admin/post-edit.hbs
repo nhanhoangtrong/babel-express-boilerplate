@@ -13,7 +13,7 @@
 						<label class="control-label col-md-3 col-sm-3 col-xs-12" for="title">Title <span class="required">*</span>
 						</label>
 						<div class="col-md-6 col-sm-6 col-xs-12">
-							<input type="text" id="title" name="title" value="{{post.title}}"required="required" class="form-control col-md-7 col-xs-12">
+							<input type="text" id="title" name="title" value="{{post.title}}" required="required" class="form-control col-md-7 col-xs-12">
 						</div>
 					</div>
 					<div class="form-group">
@@ -21,6 +21,18 @@
 						</label>
 						<div class="col-md-6 col-sm-6 col-xs-12">
 							<input type="text" id="slug" name="slug" value="{{post.slug}}" required="required" class="form-control col-md-7 col-xs-12">
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="control-label col-md-3 col-sm-3 col-xs-12" for="selectImageFile">Feature Image</label>
+						<div class="col-md-6 col-sm-6 col-xs-12">
+							<input type="file" id="selectImageFile" name="selectImageFile" value="" onchange="onSelectImage()" class="form-control col-md-7 col-xs-12" accept="image/*" placeholder="Selecting a feature image">
+							<input type="text" id="image" name="image" value="{{post.image}}" hidden style="display: none;">
+						</div>
+					</div>
+					<div class="form-group">
+						<div id="featureImage" class="col-md-offset-3 col-sm-offset-3 col-md-6 col-sm-6 col-xs-12">
+							<img class="img-responsive" src="{{post.image}}" alt="Post feature image">
 						</div>
 					</div>
 					<div class="form-group">
@@ -210,12 +222,63 @@ $('#publishedAt').daterangepicker({
     }
 });
 function submitPost(e, postId) {
-	console.log('postId', postId)
-	// console.log($('#content-editor').html())
 	$('#content').html($('#content-editor').html())
-	// document.getElementById('edit-post-form').elements['categories'] = $('#categories').val()
 	$('#edit-post-form').submit()
-	// console.log($('#categories').val())
+}
+
+function onSelectImage() {
+	var file = $('#selectImageFile')[0].files[0];
+	var fd = new FormData();
+	var csrfToken = $('#_csrf').val();
+	console.log(csrfToken);
+	fd.append('uploadImage', file);
+	console.log(fd);
+	$('#featureImage').html('<i class="fa fa-spin fa-spinner></i>');
+	NProgress.start();
+	$.ajax({
+		url: '/admin/upload/image',
+		type: 'POST',
+		headers: {
+			'X-CSRF-TOKEN': csrfToken,
+			'X-XSRF-TOKEN': csrfToken,
+		},
+		data: fd,
+		cache: false,
+        contentType: false,
+		enctype: 'multipart/form-data',
+        processData: false,
+		success: function(res) {
+			if (res.status === 'success') {
+				$('#featureImage').html('<img src="' + res.url + '" class="img-responsive" alt="Post feature image">');
+				$('#image').val(res.url);
+				$('#messages').html(
+					'<div class="alert alert-success alert-dismissible fade in" role="alert">' +
+						'<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>' +
+						'<strong>Success! </strong>' + res.message +
+					'</div>'
+				);
+			} else {
+				$('#image').val("");
+				$('#messages').html(
+					'<div class="alert alert-danger alert-dismissible fade in" role="alert">' +
+						'<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>' +
+						'<strong>Error! </strong>' + res.message +
+					'</div>'
+				);
+			}
+			NProgress.done();
+		},
+		error: function(err) {
+			$('#image').val("");
+			$('#messages').html(
+				'<div class="alert alert-danger alert-dismissible fade in" role="alert">' +
+					'<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>' +
+					'<strong>Error! </strong>' + res.message +
+				'</div>'
+			);
+			NProgress.done();
+		}
+	});
 }
 </script>
 {{/contentFor}}

@@ -4,6 +4,9 @@
 # Distribution folder
 dist
 
+# Upload folder
+src/static/uploads
+
 # Logs
 logs
 *.log

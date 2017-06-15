@@ -15,7 +15,7 @@ const postSchema = new Schema({
     },
     image: {
         type: String,
-        default: '/images/pic13.jpg',
+        default: '/static/home/images/pic13.jpg',
     },
     description: String,
     author: {

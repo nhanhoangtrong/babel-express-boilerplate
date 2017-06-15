@@ -52,6 +52,7 @@ export const postNewPost = (body) => {
         author: body.author,
         publishedAt: (body.publishedAt || Date.now()),
         content: body.content,
+        image: body.image,
         categories: body.categories,
     })
     return newPost.save()
@@ -68,6 +69,7 @@ export const updatePost = (body) => {
                 post.author = body.author
                 post.publishedAt = (body.publishedAt || Date.now())
                 post.content = body.content
+                post.image = body.image
                 post.categories = body.categories
                 return post.save()
             }
