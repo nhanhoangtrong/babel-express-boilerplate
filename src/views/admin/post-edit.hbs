@@ -13,14 +13,14 @@
 						<label class="control-label col-md-3 col-sm-3 col-xs-12" for="title">Title <span class="required">*</span>
 						</label>
 						<div class="col-md-6 col-sm-6 col-xs-12">
-							<input type="text" id="title" name="title" value="{{post.title}}" required="required" class="form-control col-md-7 col-xs-12">
+							<input type="text" id="title" name="title" value="{{post.title}}" required="required" class="form-control col-md-7 col-xs-12" onchange="generateSlug()" oninput="generateSlug()">
 						</div>
 					</div>
 					<div class="form-group">
 						<label class="control-label col-md-3 col-sm-3 col-xs-12" for="slug">Slug <span class="required">*</span>
 						</label>
 						<div class="col-md-6 col-sm-6 col-xs-12">
-							<input type="text" id="slug" name="slug" value="{{post.slug}}" required="required" class="form-control col-md-7 col-xs-12">
+							<input type="text" id="slug" name="slug" value="{{post.slug}}" required="required" class="form-control col-md-7 col-xs-12" readonly>
 						</div>
 					</div>
 					<div class="form-group">
@@ -279,6 +279,11 @@ function onSelectImage() {
 			NProgress.done();
 		}
 	});
+}
+function generateSlug() {
+	var postTitle = $('#title').val();
+	var slug = slugify(postTitle);
+	$('#slug').val(slug);
 }
 </script>
 {{/contentFor}}
