@@ -9,13 +9,11 @@ router.get('/:postSlug', function(req, res, next) {
             if (post) {
                 res.render('home/post', {
                     title: post.title,
-                    _csrf: req.csrfToken,
                     post: post,
                 })
             } else {
                 res.render('home/error', {
                     title: 'Error 404',
-                    _csrf: req.csrfToken,
                     message: 'Page not found',
                 })
             }

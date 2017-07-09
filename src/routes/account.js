@@ -9,7 +9,6 @@ router
     .get('/', passportConfig.isAuthenticated, function(req, res, next) {
         res.render('home/account', {
             title: 'Account',
-            _csrf: req.csrfToken,
             user: req.user,
         })
     })

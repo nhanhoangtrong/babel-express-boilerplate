@@ -8,18 +8,20 @@ import bodyParser from 'body-parser'
 const router = Router()
 
 router
+    .use(function(req, res, next) {
+        res.locals._csrf = req.csrfToken
+        next()
+    })
     .get('/', function(req, res, next) {
         getAllPostCategories().then(function(postCategories) {
             res.render('home/index', {
                 title: 'Homepage',
-                _csrf: req.csrfToken,
                 user: req.user,
                 postCategories: postCategories,
             })
         }).catch(function(err) {
             console.error(err)
             res.render('home/error', {
-                _csrf: req.csrfToken,
                 title: 'Error 500',
             })
         })
@@ -27,12 +29,12 @@ router
     .get('/login', function(req, res, next) {
         if (req.user) {
             res.redirect('/')
+        } else {
+            res.render('home/login', {
+                title: 'Login',
+                description: 'Login page',
+            })
         }
-        res.render('home/login', {
-            title: 'Login',
-            description: 'Login page',
-            _csrf: req.csrfToken,
-        })
     })
     .post('/login', passport.authenticate('local', {
         failureRedirect: '/login',
@@ -52,14 +54,12 @@ router
             res.render('home/posts', {
                 title: 'Recent posts',
                 user: req.user,
-                _csrf: req.csrfToken,
                 posts: posts,
                 page: 0,
             })
         }).catch(function(err) {
             console.error(err)
             res.render('home/error', {
-                _csrf: req.csrfToken,
                 title: 'Error 500',
             })
         })
@@ -67,7 +67,6 @@ router
     .get('/about', function(req, res, next) {
         res.render('home/about', {
             title: 'About us',
-            _csrf: req.csrfToken,
             user: req.user,
         })
     })

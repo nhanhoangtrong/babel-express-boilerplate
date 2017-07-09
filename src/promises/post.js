@@ -77,7 +77,7 @@ export const updatePost = (body) => {
         })
 }
 
-export const removeCategoryFromPost = (catId) => {
+export const removeCategoryFromPosts = (catId) => {
     return Post.where({ categories: catId, })
         .update({
             $pull: {
@@ -90,6 +90,6 @@ export const removePost = (postId) => {
     return Post.findByIdAndRemove(postId).exec()
 }
 
-export const removePostByAuthor = (userId) => {
+export const removePostsByAuthor = (userId) => {
     return Post.remove({author: userId}).exec()
 }

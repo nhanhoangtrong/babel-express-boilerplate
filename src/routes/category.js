@@ -12,14 +12,12 @@ router.get('/:catSlug', function(req, res, next) {
     }).then(function(posts) {
         res.render('home/category', {
             title: postCategory.name,
-            _csrf: req.csrfToken,
             postCategory: postCategory,
             posts: posts
         })
     }).catch(function(err) {
         console.error(err)
         res.render('home/error', {
-            _csrf: req.csrfToken,
             title: 'Error 500',
             message: err.message
         })
