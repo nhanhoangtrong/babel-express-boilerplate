@@ -1,9 +1,9 @@
 import { Router } from 'express'
 import bodyParser from 'body-parser'
 import cors from 'cors'
-import * as userPromises from '../promises/user'
-import * as postCategoryPromises from '../promises/postCategory'
-import * as postPromises from '../promises/post'
+import * as userPromises from '../../promises/user'
+import * as postCategoryPromises from '../../promises/postCategory'
+import * as postPromises from '../../promises/post'
 
 const router = Router()
 

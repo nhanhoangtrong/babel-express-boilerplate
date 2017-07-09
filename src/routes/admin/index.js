@@ -2,10 +2,10 @@ import { Router } from 'express'
 import { resolve } from 'path'
 import passport from 'passport'
 import multer from 'multer'
-import * as postPromises from '../promises/post'
-import * as userPromises from '../promises/user'
-import * as categoryPromises from '../promises/postCategory'
-import * as enquiryPromises from '../promises/enquiry'
+import * as postPromises from '../../promises/post'
+import * as userPromises from '../../promises/user'
+import * as categoryPromises from '../../promises/postCategory'
+import * as enquiryPromises from '../../promises/enquiry'
 
 var storage = multer.diskStorage({
     destination: function (req, file, cb) {
@@ -22,7 +22,7 @@ var storage = multer.diskStorage({
 const uploads = multer({
     storage,
     limits: {
-        fileSize: 1024 * 1024,
+        fileSize: 1024 * 1024 * 1, // 1 MB
     }
 })
 

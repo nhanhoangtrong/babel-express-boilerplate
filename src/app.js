@@ -26,6 +26,7 @@ import postRoute from './routes/post'
 import categoryRoute from './routes/category'
 import accountRoute from './routes/account'
 import adminRoute from './routes/admin'
+import ajaxRoute from './routes/ajax'
 
 import * as passportConfig from './config/passport'
 import passport from 'passport'
@@ -130,6 +131,7 @@ app.use('/post', postRoute)
 app.use('/category', categoryRoute)
 app.use('/account', accountRoute)
 app.use('/admin', adminRoute)
+app.use('/ajax', ajaxRoute)
 app.use('/api', apiRoute)
 
 
