@@ -197,7 +197,7 @@
 
 {{#contentFor "inlineScripts"}}
 <script>
-{{#equal post.categories.length  0}}
+{{#ifeq post.categories.length  0}}
 var selectedCategories = [];
 {{else}}
 var selectedCategories = [
@@ -205,7 +205,7 @@ var selectedCategories = [
 	'{{catId}}',
 	{{/each}}
 ];
-{{/equal}}
+{{/ifeq}}
 $('#categories').val(selectedCategories);
 
 $('#content-editor').wysiwyg();

@@ -62,42 +62,42 @@
                             <div class="menu_section">
                                 <h3>General</h3>
                                 <ul class="nav side-menu">
-                                    {{#equal section "home"}}
+                                    {{#ifeq section "home"}}
                                     <li class="active">
                                     {{else}}
                                     <li>
-                                    {{/equal}}
+                                    {{/ifeq}}
                                     <a><i class="fa fa-home"></i> Home <span class="fa fa-chevron-down"></span></a>
                                         <ul class="nav child_menu">
                                             <li><a href="/admin">Dashboard</a></li>
                                             <li><a href="/admin">Statistics</a></li>
                                         </ul>
                                     </li>
-                                    {{#equal section "post"}}
+                                    {{#ifeq section "post"}}
                                     <li class="active">
                                     {{else}}
                                     <li>
-                                    {{/equal}}<a><i class="fa fa-edit"></i> Posts <span class="fa fa-chevron-down"></span></a>
+                                    {{/ifeq}}<a><i class="fa fa-edit"></i> Posts <span class="fa fa-chevron-down"></span></a>
                                         <ul class="nav child_menu">
                                             <li><a href="/admin/post/all">All Posts</a></li>
                                             <li><a href="/admin/post/new">Add New</a></li>
                                         </ul>
                                     </li>
-                                    {{#equal section "category"}}
+                                    {{#ifeq section "category"}}
                                     <li class="active">
                                     {{else}}
                                     <li>
-                                    {{/equal}}<a><i class="fa fa-archive"></i> Post Categories <span class="fa fa-chevron-down"></span></a>
+                                    {{/ifeq}}<a><i class="fa fa-archive"></i> Post Categories <span class="fa fa-chevron-down"></span></a>
                                         <ul class="nav child_menu">
                                             <li><a href="/admin/category/all">All Categories</a></li>
                                             <li><a href="/admin/category/new">Add New</a></li>
                                         </ul>
                                     </li>
-                                    {{#equal section "enquiry"}}
+                                    {{#ifeq section "enquiry"}}
                                     <li class="active">
                                     {{else}}
                                     <li>
-                                    {{/equal}}<a><i class="fa fa-question-circle-o"></i> Enquiries <span class="fa fa-chevron-down"></span></a>
+                                    {{/ifeq}}<a><i class="fa fa-question-circle-o"></i> Enquiries <span class="fa fa-chevron-down"></span></a>
                                         <ul class="nav child_menu">
                                             <li><a href="/admin/enquiry/all">All Enquiries</a></li>
                                         </ul>
@@ -107,21 +107,21 @@
                             <div class="menu_section">
                                 <h3>User Management</h3>
                                 <ul class="nav side-menu">
-                                    {{#equal section "users"}}
+                                    {{#ifeq section "users"}}
                                     <li class="active">
                                     {{else}}
                                     <li>
-                                    {{/equal}}<a><i class="fa fa-user-circle-o"></i> Users <span class="fa fa-chevron-down"></span></a>
+                                    {{/ifeq}}<a><i class="fa fa-user-circle-o"></i> Users <span class="fa fa-chevron-down"></span></a>
                                     <ul class="nav child_menu">
                                         <li><a href="/admin/user/all">All Users</a></li>
                                         <li><a href="/admin/user/new">Add New</a></li>
                                     </ul>
                                     </li>
-                                    {{#equal section "settings"}}
+                                    {{#ifeq section "settings"}}
                                     <li class="active">
                                     {{else}}
                                     <li>
-                                    {{/equal}}<a><i class="fa fa-sliders"></i> Settings <span class="fa fa-chevron-down"></span></a>
+                                    {{/ifeq}}<a><i class="fa fa-sliders"></i> Settings <span class="fa fa-chevron-down"></span></a>
                                         <ul class="nav child_menu">
                                             <li><a href="/admin/settings/general">General</a></li>
                                             <li><a href="/admin/settings/reading">Reading</a></li>
@@ -130,11 +130,11 @@
                                             <li><a href="/admin/settings/l10n">Localization</a></li>
                                         </ul>
                                     </li>
-                                    {{#equal section "appearance"}}
+                                    {{#ifeq section "appearance"}}
                                     <li class="active">
                                     {{else}}
                                     <li>
-                                    {{/equal}}<a><i class="fa fa-magic"></i> Appearance <span class="fa fa-chevron-down"></span></a>
+                                    {{/ifeq}}<a><i class="fa fa-magic"></i> Appearance <span class="fa fa-chevron-down"></span></a>
                                         <ul class="nav child_menu">
                                             <li><a href="/admin/appearance/themes">Themes</a></li>
                                             <li><a href="/admin/appearance/menus">Menus</a></li>
@@ -142,11 +142,11 @@
                                             <li><a href="/admin/appearance/footer">Footer</a></li>
                                         </ul>
                                     </li>
-                                    {{#equal section "plugin"}}
+                                    {{#ifeq section "plugin"}}
                                     <li class="active">
                                     {{else}}
                                     <li>
-                                    {{/equal}}<a><i class="fa fa-sitemap"></i> Plugins <span class="label label-success pull-right">Coming Soon</span></span></a>
+                                    {{/ifeq}}<a><i class="fa fa-sitemap"></i> Plugins <span class="label label-success pull-right">Coming Soon</span></span></a>
                                     </li>
                                 </ul>
                             </div>
