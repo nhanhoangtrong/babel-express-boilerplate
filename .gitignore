@@ -4,6 +4,9 @@
 # Distribution folder
 dist
 
+# Uploads folder
+static/uploads
+
 # Migrations status
 migrations/.migrate
 
