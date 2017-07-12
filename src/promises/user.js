@@ -35,6 +35,7 @@ export const updateUser = (userId, body) => {
                 user.password = body.password
                 user.email = body.email
                 user.createdAt = (body.createdAt || user.createdAt)
+                user.isAdmin = body.isAdmin
                 return user.save()
             }
             throw new Error('User not found')
@@ -58,6 +59,17 @@ export const updateUserPassword = (_id, newPassword) => {
         .then(function(user) {
             if (user) {
                 user.password = newPassword
+                return user.save()
+            }
+            throw new Error('User not found')
+        })
+}
+
+export const updateUserRole = (_id, isAdmin) => {
+    return User.findById(_id).exec()
+        .then(function(user) {
+            if (user) {
+                user.isAdmin = isAdmin
                 return user.save()
             }
             throw new Error('User not found')
