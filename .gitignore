@@ -5,7 +5,7 @@
 dist
 
 # Migrations status
-migrations
+migrations/.migrate
 
 # Logs
 logs
