@@ -55,6 +55,19 @@ mongoose.connection.on('error', (err) => {
 })
 
 /**
+ * Running the migrations
+ */
+import migrate from 'migrate'
+const set = migrate.load(path.resolve(__dirname, '../migrations/.migrate'), path.resolve(__dirname, '../migrations'))
+// auto migrate
+set.up(function(err) {
+    if (err) {
+        return console.error(err);
+    }
+    console.log(chalk.green('Migration process successfully!'))
+})
+
+/**
  * Setting the default configurations for express application
  */
 app.engine('hbs', hbs.express4({

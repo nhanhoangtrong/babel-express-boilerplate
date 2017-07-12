@@ -4,8 +4,8 @@
 # Distribution folder
 dist
 
-# Upload folder
-src/static/uploads
+# Migrations status
+migrations
 
 # Logs
 logs
