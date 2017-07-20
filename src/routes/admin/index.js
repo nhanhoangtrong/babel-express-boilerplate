@@ -6,9 +6,11 @@ import * as postPromises from '../../promises/post'
 import * as userPromises from '../../promises/user'
 import * as categoryPromises from '../../promises/postCategory'
 import * as enquiryPromises from '../../promises/enquiry'
-import postAdminRouter from './post'
-import categoryAdminRouter from './category'
-import userAdminRouter from './user'
+import postAdminRoute from './post'
+import categoryAdminRoute from './category'
+import userAdminRoute from './user'
+import uploadAdminRoute from '../upload'
+import localFileAdminRoute from './localFile'
 
 var storage = multer.diskStorage({
     destination: function (req, file, cb) {
@@ -89,6 +91,7 @@ router
     /**
      * Upload media section
      */
+    .use('/upload', uploadAdminRoute)
     .post('/upload/image', function(req, res, next) {
         uploadImage(req, res, function(err) {
             if (err) {
@@ -115,9 +118,11 @@ router
             }
         })
     })
-    .use('/post', postAdminRouter)
-    .use('/category', categoryAdminRouter)
-    .use('/user', userAdminRouter)
+    .use('/post', postAdminRoute)
+    .use('/category', categoryAdminRoute)
+    .use('/user', userAdminRoute)
+    .use('/local-file', localFileAdminRoute)
+
     /**
      * Enquiry section
      */

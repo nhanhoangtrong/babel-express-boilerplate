@@ -83,6 +83,12 @@
                                             <li><a href="/admin/category/new">Add New</a></li>
                                         </ul>
                                     </li>
+                                    <li {{#ifeq section "localFiles"}}class="active"{{/ifeq}}>
+                                        <a><i class="fa fa-file-o"></i> Local Files <span class="fa fa-chevron-down"></span></a>
+                                        <ul class="nav child_menu">
+                                            <li><a href="/admin/local-file/all">All Local Files</a></li>
+                                        </ul>
+                                    </li>
                                     <li {{#ifeq section "enquiry"}}class="active"{{/ifeq}}>
                                         <a><i class="fa fa-question-circle-o"></i> Enquiries <span class="fa fa-chevron-down"></span></a>
                                         <ul class="nav child_menu">

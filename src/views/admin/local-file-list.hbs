@@ -1,0 +1,197 @@
+{{!< admin }}
+
+{{!< admin }}
+<div class="row">
+    <div class="col-md-12 col-sm-12 col-xs-12">
+    	<div class="x_panel">
+    		<div class="x_title">
+    			<h2>All Local Files<small>Show all Local Files uploaded by users</small></h2>
+    			<ul class="nav navbar-right panel_toolbox">
+    				<li><a data-toggle="modal" data-target="#editLocalFile" class="btn btn-default">Add <i class="fa fa-plus"></i></a>
+    				</li>
+    			</ul>
+    			<div class="clearfix"></div>
+    		</div>
+    		<div class="x_content">
+                <input type="text" id="_csrf" name="_csrf" value="{{_csrf}}" hidden="hidden" style="display: none;">
+    			<table class="table table-hover">
+    				<thead>
+    					<tr>
+    						<th>#</th>
+    						<th>File Name</th>
+    						<th>File Type</th>
+                            <th>Size</th>
+                            <th>Author</th>
+                            <th>Created At</th>
+                            <th>Updated At</th>
+                            <th>Actions</th>
+    					</tr>
+    				</thead>
+    				<tbody>
+                        {{#each localFiles}}
+                        <tr id="{{_id}}">
+    						<th scope="row">{{inc @index}}</th>
+                            <td><a href="{{path}}" target="_blank">{{filename}}</a></td>
+    						<td>{{filetype}}</td>
+                            <td>{{filesize}} {{#if filesize}}bytes{{else}}byte{{/if}}</td>
+                            <td><a href="/admin/user/{{author._id}}">{{author.firstName}} {{author.lastName}}</a></td>
+                            <td>{{millisecondsToDate createdAt}}</td>
+                            <td>{{millisecondsToDate updatedAt}}</td>
+                            <td>
+                                <button class="btn btn-default" onclick="confirmRemoveDialog('{{_id}}', '{{filename}}')"><i class="fa fa-trash"></i></button>
+                            </td>
+    					</tr>
+                        {{/each}}
+    				</tbody>
+    			</table>
+    		</div>
+    	</div>
+    </div>
+</div>
+
+<!-- Confirm remove local file dialog -->
+<div id="removeConfirmDialog" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-md">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span>
+          </button>
+          <h4 class="modal-title">Do you want to remove this local file?</h4>
+        </div>
+        <div class="modal-body">
+          <h4>Ops! You try to remove local file <strong id="removingFileName"></strong>!</h4>
+          <p>Click Delete to remove it now or Cancel to go back.</p>
+          <input id="removingLocalFile" hidden style="display: none;">
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-danger" onclick="removeLocalFile()">Delete</button>
+        </div>
+      </div>
+    </div>
+</div>
+
+<!-- Add new local file dialog -->
+<div id="editLocalFile" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-md">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span>
+          </button>
+          <h4 class="modal-title">Upload a new file from your device</h4>
+        </div>
+        <div class="modal-body">
+          <input id="uploadFileSelect" name="uploadFileSelect" type="file" accept="image/*">
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-danger" onclick="uploadSelectedFile()">Upload</button>
+        </div>
+      </div>
+    </div>
+</div>
+{{#contentFor "pageScripts"}}
+<script>
+    var csrfToken = $('#_csrf').val();
+    function confirmRemoveDialog(localFileId, filename) {
+        $('#removingLocalFile').val(localFileId);
+        $('#removingFileName').html(filename);
+        $('#removeConfirmDialog').modal();
+    }
+
+    function uploadSelectedFile() {
+    	var file = $('#uploadFileSelect')[0].files[0];
+    	var fd = new FormData();
+        fd.append('file', file);
+    	NProgress.start();
+    	$.ajax({
+    		url: '/admin/upload/single',
+    		type: 'POST',
+    		headers: {
+    			'X-CSRF-TOKEN': csrfToken,
+    			'X-XSRF-TOKEN': csrfToken,
+    		},
+    		data: fd,
+    		cache: false,
+            contentType: false,
+    		enctype: 'multipart/form-data',
+            processData: false,
+    		success: function(res) {
+    			if (res.status === 'ok') {
+    				$('#messages').html(
+    					'<div class="alert alert-success alert-dismissible fade in" role="alert">' +
+    						'<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>' +
+    						'<strong>Success! </strong>' + res.message +
+    					'</div>'
+    				);
+    			} else {
+    				$('#messages').html(
+    					'<div class="alert alert-danger alert-dismissible fade in" role="alert">' +
+    						'<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>' +
+    						'<strong>Error! </strong>' + res.message +
+    					'</div>'
+    				);
+    			}
+                $('#editLocalFile').modal('hide')
+    			NProgress.done();
+    		},
+    		error: function(err) {
+    			$('#messages').html(
+    				'<div class="alert alert-danger alert-dismissible fade in" role="alert">' +
+    					'<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>' +
+    					'<strong>Error! </strong>' + res.message +
+    				'</div>'
+    			);
+                $('#editLocalFile').modal('hide')
+    			NProgress.done();
+    		}
+    	});
+    }
+    function removeLocalFile() {
+        var localFileId = $('#removingLocalFile').val();
+        if (localFileId) {
+            var data = {
+                _id: localFileId,
+                _csrf: csrfToken,
+            };
+            $.ajax({
+                url: '/admin/local-file/remove',
+                type: 'POST',
+                data: data,
+                processData: true,
+                success: function(res) {
+                    $('#removeConfirmDialog').modal('hide');
+                    if (res.status === 'ok') {
+                        $('#' + localFileId).fadeOut('fast', function() {
+                            $(this).remove();
+                        });
+                        $('#messages').html(
+                            '<div class="alert alert-success alert-dismissible fade in" role="alert">' +
+                                '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>' +
+                                '<strong>Success! </strong>' + res.message +
+                            '</div>'
+                        );
+                    } else {
+                        // show error
+                        $('#messages').html(
+                            '<div class="alert alert-danger alert-dismissible fade in" role="alert">' +
+                                '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>' +
+                                '<strong>Error! </strong>' + res.message +
+                            '</div>'
+                        );
+                    }
+                },
+                error: function(err) {
+                    $('#removeConfirmDialog').modal('hide');
+                    $('#messages').html(
+                        '<div class="alert alert-danger alert-dismissible fade in" role="alert">' +
+                            '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>' +
+                            '<strong>Error! </strong>' + err.message +
+                        '</div>'
+                    );
+                }
+            });
+        }
+    }
+</script>
+{{/contentFor}}
