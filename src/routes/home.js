@@ -1,9 +1,11 @@
 import { Router } from 'express'
+import passport from 'passport'
+import bodyParser from 'body-parser'
+
 import { getAllPostCategories } from '../promises/postCategory'
 import { getPostsByPage } from '../promises/post'
 import { postNewEnquiry } from '../promises/enquiry'
-import passport from 'passport'
-import bodyParser from 'body-parser'
+import Post from '../models/Post'
 
 const router = Router()
 
@@ -13,11 +15,12 @@ router
         next()
     })
     .get('/', function(req, res, next) {
-        getAllPostCategories().then(function(postCategories) {
+        Post.find({isPublished: true}).sort({'publishedAt': -1}).limit(10).exec()
+        .then(function(posts) {
             res.render('home/index', {
                 title: 'Homepage',
                 user: req.user,
-                postCategories: postCategories,
+                posts,
             })
         }).catch(function(err) {
             console.error(err)

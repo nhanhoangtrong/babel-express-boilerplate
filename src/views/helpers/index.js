@@ -23,6 +23,9 @@ const helpers = {
     ifeq(valueOne, valueTwo, options) {
         return valueOne === valueTwo ? options.fn(this) : options.inverse(this)
     },
+    characterLimit(text, number, options) {
+        return text.slice(0, number > text.length ? text.length - 1 : number - 1) + '...'
+    }
 }
 
 export default (hbs) => {
