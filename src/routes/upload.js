@@ -1,5 +1,5 @@
 import { Router } from 'express'
-import { resolve } from 'path'
+import path from 'path'
 import { unlinkSync } from 'fs'
 import multer from 'multer'
 import uuidv1 from 'uuid/v1'
@@ -7,33 +7,44 @@ import LocalFile from '../models/LocalFile'
 
 const router = Router()
 
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, process.env.UPLOADS_FOLDER || resolve(__dirname, '../../static/uploads/'))
-    },
-    filename: (req, file, cb) => {
-        const nameParts = file.originalname.split('.')
-        if (nameParts.length < 2) {
-            return cb(new Error('File must has an extension'))
-        }
-        return cb(null, `${uuidv1()}.${nameParts[nameParts.length - 1]}`);
-    }
-})
+const filename = (req, file, cb) => {
+    cb(null, `${uuidv1()}${path.extname(file.originalname)}`)
+}
 
-const uploads = multer({
-    storage,
+const multerFiles = multer({
+    storage: multer.diskStorage({
+        destination: process.env.UPLOAD_FILES_FOLDER || path.resolve(__dirname, '../../static/uploads/'),
+        filename,
+    }),
     limits: {
         fileSize: 1024 * 1024 * 1, // Limit uploaded file size to 1 MB
     },
 })
 
-const uploadSingle = uploads.single('file')
+const multerImages = multer({
+    storage: multer.diskStorage({
+        destination: process.env.UPLOAD_IMAGES_FOLDER || path.resolve(__dirname, '../../static/uploads/images/'),
+        filename,
+    }),
+    limits: {
+        fileSize: 1024 * 1024 * 4, // Limit upload image size to 4 MB each file
+    },
+    fileFilter: (req, file, cb) => {
+        const fileTypes = /jpeg|jpg|png|gif/
+        const mimetype = fileTypes.test(file.mimetype)
+        const extname = fileTypes.test(path.extname(file.originalname).toLowerCase())
 
-router
-.post('/single', function(req, res, next) {
+        if (mimetype && extname) {
+            return cb(null, true)
+        }
+        cb(new Error('Image upload only supports the following filetypes: ' + filetypes))
+    }
+})
+
+const singleLocalFile = (uploadFunc, dirUrl, req, res) => {
     // Creating a single upload file promise
     new Promise(function(resolve, reject) {
-        uploadSingle(req, res, function(err) {
+        uploadFunc(req, res, function(err) {
             if (err) {
                 reject(err)
             } else {
@@ -48,7 +59,7 @@ router
                 filename: file.filename,
                 filetype: file.mimetype,
                 filesize: file.size,
-                path: `/static/uploads/${file.filename}`,
+                path: path.join(dirUrl, file.filename),
                 author: req.user._id,
             })
         }
@@ -61,7 +72,7 @@ router
                 status: 'ok',
                 code: 200,
                 message: 'File has been uploaded successfully',
-                data: {
+                body: {
                     localFile,
                 },
             })
@@ -73,7 +84,7 @@ router
 
         // remove uploaded file on disk if exist
         if (req.file) {
-            unlinkSync(resolve(req.file.destination, req.file.filename))
+            unlinkSync(path.resolve(req.file.destination, req.file.filename))
         }
         return res.json({
             status: 'error',
@@ -89,9 +100,20 @@ router
             message: err.message,
         })
     })
+}
+
+router
+.post('/file', function(req, res, next) {
+    singleLocalFile(multerFiles.single('file'), '/static/uploads/', req, res)
 })
-.post('/multi', function(req, res, next) {
-    // TODO: Upload multiple file
+.post('/image', function(req, res, next) {
+    singleLocalFile(multerImages.single('imageFile'), '/static/uploads/images/', req, res)
+})
+.post('/multi-file', function(req, res, next) {
+    // TODO: Upload multiple files
+})
+.post('/multi-image', function(req, res, next) {
+    // TODO: Upload multiple images
 })
 
 export default router

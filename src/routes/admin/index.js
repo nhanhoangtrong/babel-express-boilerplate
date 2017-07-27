@@ -1,7 +1,6 @@
 import { Router } from 'express'
 import { resolve } from 'path'
 import passport from 'passport'
-import multer from 'multer'
 import * as postPromises from '../../promises/post'
 import * as userPromises from '../../promises/user'
 import * as categoryPromises from '../../promises/postCategory'
@@ -11,27 +10,6 @@ import categoryAdminRoute from './category'
 import userAdminRoute from './user'
 import uploadAdminRoute from '../upload'
 import localFileAdminRoute from './localFile'
-
-var storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-        cb(null, 'static/uploads/')
-    },
-    filename: function (req, file, cb) {
-        const nameParts = file.originalname.split('.')
-        const ext = nameParts[nameParts.length - 1]
-
-        cb(null, 'feature-image-' + Date.now() + '.' + ext);
-    }
-})
-
-const uploads = multer({
-    storage,
-    limits: {
-        fileSize: 1024 * 1024 * 1, // 1 MB
-    }
-})
-
-const uploadImage = uploads.single('uploadImage')
 
 const router = Router()
 
@@ -92,32 +70,6 @@ router
      * Upload media section
      */
     .use('/upload', uploadAdminRoute)
-    .post('/upload/image', function(req, res, next) {
-        uploadImage(req, res, function(err) {
-            if (err) {
-                res.json({
-                    status: 'error',
-                    code: 500,
-                    message: err.message,
-                })
-            } else {
-                if (req.file) {
-                    res.json({
-                        status: 'success',
-                        code: 200,
-                        message: 'Image has been uploaded successfully!',
-                        url: `/static/uploads/${req.file.filename}`,
-                    })
-                } else {
-                    res.json({
-                        status: 'error',
-                        code: 500,
-                        message: 'There are some errors during uploading process!',
-                    })
-                }
-            }
-        })
-    })
     .use('/post', postAdminRoute)
     .use('/category', categoryAdminRoute)
     .use('/user', userAdminRoute)
