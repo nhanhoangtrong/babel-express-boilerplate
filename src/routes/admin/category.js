@@ -49,7 +49,7 @@ router
             const removedCategory = args[0]
             if (removedCategory) {
                 res.json({
-                    status: 'success',
+                    status: 'ok',
                     code: 200,
                     message: `Category '${removedCategory.name}' has been removed successfully!`,
                 })

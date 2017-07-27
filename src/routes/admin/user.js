@@ -79,7 +79,7 @@ router
             const removedPosts = args[1]
             if (removedUser) {
                 res.json({
-                    status: 'success',
+                    status: 'ok',
                     code: 200,
                     message: `User '${removedUser.firstName} ${removedUser.lastName}' has been removed successfully!`,
                 })

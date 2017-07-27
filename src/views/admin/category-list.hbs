@@ -83,7 +83,7 @@
                 processData: true,
                 success: function(res) {
                     $('#removeConfirmDialog').modal('hide');
-                    if (res.status === 'success') {
+                    if (res.status === 'ok') {
                         $('#' + catId).remove();
                         $('#messages').html(
                             '<div class="alert alert-success alert-dismissible fade in" role="alert">' +

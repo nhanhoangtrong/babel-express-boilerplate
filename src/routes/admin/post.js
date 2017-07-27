@@ -63,7 +63,7 @@ router
             .then(function(removedPost) {
                 if (removedPost) {
                     res.json({
-                        status: 'success',
+                        status: 'ok',
                         code: 200,
                         message: `Post ${removedPost.title} has been removed successfully!`,
                     })
