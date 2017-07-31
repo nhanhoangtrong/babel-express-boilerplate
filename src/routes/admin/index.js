@@ -30,13 +30,11 @@ router
             // If not, redirect to homepage
             if (req.user.checkAdmin()) {
                 res.locals.user = req.user
-                next()
-            } else {
-                res.redirect('/')
+                return next()
             }
-        } else {
-            res.redirect('/admin/login')
+            return res.redirect('/')
         }
+        return res.redirect('/admin/login')
     })
     .get('/', function(req, res, next) {
         res.render('admin/dashboard', {

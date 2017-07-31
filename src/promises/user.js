@@ -19,7 +19,7 @@ export const postNewUser = (body) => {
     const newUser = new User({
         firstName: body.firstName,
         lastName: body.lastName,
-        email : body.email,
+        email: body.email,
         password: body.password,
         createdAt: body.createdAt,
     })

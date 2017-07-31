@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 import { Router } from 'express'
 import passport from 'passport'
 import * as passportConfig from '../config/passport'

@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 import { Router } from 'express'
 import * as categoryPromises from '../../promises/postCategory'
 import { removeCategoryFromPosts } from '../../promises/post'

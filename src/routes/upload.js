@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 import { Router } from 'express'
 import path from 'path'
 import { unlinkSync } from 'fs'
@@ -37,7 +38,7 @@ const multerImages = multer({
         if (mimetype && extname) {
             return cb(null, true)
         }
-        cb(new Error('Image upload only supports the following filetypes: ' + filetypes))
+        return cb(new Error('Image upload only supports the following filetypes: ' + fileTypes))
     }
 })
 

@@ -64,7 +64,7 @@ set.up(function(err) {
     if (err) {
         return console.error(err);
     }
-    console.log(chalk.green('Migration process successfully!'))
+    return console.log(chalk.green('Migration process successfully!'))
 })
 
 /**
@@ -121,7 +121,7 @@ app.use(function(req, res, next) {
     if (req.path.startsWith('/api')) {
         next()
     } else {
-        if (req.method.toLowerCase() === 'post') {
+        if (process.env.NODE_ENV === 'development' && req.method.toLowerCase() === 'post') {
             console.log(req.body)
         }
         lusca.csrf()(req, res, next)

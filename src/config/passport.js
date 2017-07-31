@@ -25,10 +25,10 @@ passport.use('local', new LocalStrategy({ usernameField: 'email' }, (email, pass
             return done(null, false, { msg: `Email ${email} not found.` })
         }
 
-        user.comparePassword(password, (err, isMatch) => {
-            if (err) {
-                console.error(err)
-                return done(err)
+        return user.comparePassword(password, (otherErr, isMatch) => {
+            if (otherErr) {
+                console.error(otherErr)
+                return done(otherErr)
             }
             if (isMatch) {
                 return done(null, user)
@@ -45,5 +45,5 @@ export const isAuthenticated = (req, res, next) => {
     if (req.isAuthenticated()) {
         return next()
     }
-    res.redirect('/login')
+    return res.redirect('/login')
 }

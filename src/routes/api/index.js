@@ -7,18 +7,18 @@ import * as postPromises from '../../promises/post'
 
 const router = Router()
 
-const onApiSuccess = (res) => ((result) => {
+const onApiSuccess = (res) => (result) => {
     if (result) {
         res.status(200).json(result)
     } else {
         res.status(404).send()
     }
-})
+}
 
-const onApiError = (res) => ((err) => {
+const onApiError = (res) => (err) => {
     console.error(err)
     res.status(500).send()
-})
+}
 
 router.use(bodyParser.json())
     .use(cors())

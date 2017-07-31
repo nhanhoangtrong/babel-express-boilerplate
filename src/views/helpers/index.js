@@ -18,7 +18,7 @@ const helpers = {
         }
     },
     inc(value, options) {
-        return parseInt(value) + 1
+        return parseInt(value, 10) + 1
     },
     ifeq(valueOne, valueTwo, options) {
         return valueOne === valueTwo ? options.fn(this) : options.inverse(this)
@@ -29,7 +29,9 @@ const helpers = {
 }
 
 export default (hbs) => {
-    for (let key in helpers) {
-        hbs.registerHelper(key, helpers[key])
+    for (const key in helpers) {
+        if (helpers.hasOwnProperty(key)) {
+            hbs.registerHelper(key, helpers[key])
+        }
     }
 }

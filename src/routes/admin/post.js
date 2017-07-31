@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 import { Router } from 'express'
 import * as postPromises from '../../promises/post'
 import * as userPromises from '../../promises/user'
@@ -71,7 +72,7 @@ router
                     res.json({
                         status: 'error',
                         code: 404,
-                        message: err.message
+                        message: 'Post could not found',
                     })
                 }
             }).catch(function(err) {

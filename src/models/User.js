@@ -73,8 +73,9 @@ userSchema.methods.makeSalt = function() {
  * @return {String}
  */
 userSchema.methods.encryptPassword = function(password) {
-    if (!password)
+    if (!password) {
         return ''
+    }
     return crypto.createHmac('sha1', this.salt).update(password).digest('hex')
 }
 

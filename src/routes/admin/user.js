@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 import { Router } from 'express'
 import * as userPromises from '../../promises/user'
 import { removePostsByAuthor } from '../../promises/post'
@@ -10,7 +11,7 @@ router
  */
 .get('/all', function(req, res, next) {
     userPromises.getUsersByPage(0, 20)
-        .then(function (users) {
+        .then(function(users) {
             res.render('admin/user-list', {
                 title: 'All Users',
                 section: "users",
