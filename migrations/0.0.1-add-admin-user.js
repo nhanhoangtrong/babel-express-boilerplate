@@ -11,13 +11,13 @@ exports.up = function(next) {
         isAdmin: true,
         password: 'password',
     });
-    admin.save(function() {
-        next();
+    admin.save(function(err) {
+        next(err);
     });
 };
 
 exports.down = function(next) {
-    User.remove({email: 'admin@localhost'}).exec().then(function() {
-        next();
+    User.remove({email: 'admin@localhost'}).exec(function(err) {
+        next(err);
     });
 };
