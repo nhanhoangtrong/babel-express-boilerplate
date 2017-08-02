@@ -2,85 +2,111 @@ import { Router } from 'express'
 import passport from 'passport'
 import bodyParser from 'body-parser'
 
-import { getAllPostCategories } from '../promises/postCategory'
-import { getPostsByPage } from '../promises/post'
-import { postNewEnquiry } from '../promises/enquiry'
+import Enquiry from '../models/Enquiry'
 import Post from '../models/Post'
 
-const router = Router()
+import postRoute from './post'
+import categoryRoute from './category'
+import accountRoute from './account'
 
-router
-    .use(function(req, res, next) {
-        res.locals._csrf = req.csrfToken
-        next()
-    })
-    .get('/', function(req, res, next) {
-        Post.find({isPublished: true}).sort({'publishedAt': -1}).limit(10).exec()
-        .then(function(posts) {
-            res.render('home/index', {
-                title: 'Homepage',
-                user: req.user,
-                posts,
-            })
-        }).catch(function(err) {
-            console.error(err)
-            res.render('home/error', {
-                title: 'Error 500',
-            })
+export default Router()
+.use((req, res, next) => {
+    res.locals._csrf = req.csrfToken
+    res.locals.user = req.user
+    next()
+})
+.get('/', (req, res, next) => {
+    const perPage = req.query.per || 10
+    const page = req.query.page || 0
+    Post
+    .find({isPublished: true})
+    .populate('categories')
+    .populate('author')
+    .sort({publishedAt: -1})
+    .skip(page * perPage)
+    .limit(perPage)
+    .exec()
+    .then((posts) => {
+        res.render('home/index', {
+            title: 'Homepage',
+            posts,
+        })
+    }).catch((err) => {
+        console.error(err)
+        res.render('home/error', {
+            title: 'Error 500',
         })
     })
-    .get('/login', function(req, res, next) {
-        if (req.user) {
-            res.redirect('/')
-        } else {
-            res.render('home/login', {
-                title: 'Login',
-                description: 'Login page',
-            })
-        }
+})
+.use('/post', postRoute)
+.use('/category', categoryRoute)
+.use('/account', accountRoute)
+.get('/login', (req, res, next) => {
+    if (req.user) {
+        return res.redirect('/')
+    }
+    return res.render('home/login', {
+        title: 'Login',
+        description: 'Login page',
     })
-    .post('/login', passport.authenticate('local', {
-        failureRedirect: '/login',
-    }), function(req, res, next) {
-        if (req.body.remember) {
-            // remember for 7 days
-            req.session.cookie.maxAge = 3600 * 1000 * 24 * 7
-        }
+})
+.post('/login', passport.authenticate('local', {
+    failureRedirect: '/login',
+}), (req, res, next) => {
+    if (req.body.remember) {
+        // remember for 7 days
+        req.session.cookie.maxAge = 3600 * 1000 * 24 * 7
+    }
+    return res.redirect('/')
+})
+.get('/logout', (req, res, next) => {
+    req.logout()
+    res.redirect('/')
+})
+.get('/posts', (req, res, next) => {
+    const perPage = req.query.per || 10
+    const page = req.query.page || 0
+    Post
+    .find({isPublished: true})
+    .populate('author')
+    .populate('categories')
+    .sort({publishedAt: -1})
+    .skip(page * perPage)
+    .limit(perPage)
+    .exec()
+    .then((posts) => {
+        res.render('home/posts', {
+            title: 'Recent posts',
+            posts: posts,
+            page: 0,
+        })
+    }).catch((err) => {
+        console.error(err)
+        res.render('home/error', {
+            title: 'Error 500',
+            error: err,
+            message: err.message,
+        })
+    })
+})
+.get('/about', (req, res, next) => {
+    res.render('home/about', {
+        title: 'About us',
+    })
+})
+.post('/enquiry', (req, res, next) => {
+    Enquiry.create({
+        name: req.body.name,
+        email: req.body.email,
+        phone: req.body.phone,
+        content: req.body.content,
+    })
+    .then((enquiry) => {
+        req.flash('success', 'New enquiry has been created successfully')
         res.redirect('/')
     })
-    .get('/logout', function(req, res, next) {
-        req.logout()
+    .catch((err) => {
+        req.flash('error', err.message)
         res.redirect('/')
     })
-    .get('/posts', function(req, res, next) {
-        getPostsByPage(0, 5).then(function(posts) {
-            res.render('home/posts', {
-                title: 'Recent posts',
-                user: req.user,
-                posts: posts,
-                page: 0,
-            })
-        }).catch(function(err) {
-            console.error(err)
-            res.render('home/error', {
-                title: 'Error 500',
-            })
-        })
-    })
-    .get('/about', function(req, res, next) {
-        res.render('home/about', {
-            title: 'About us',
-            user: req.user,
-        })
-    })
-    .post('/enquiry', function(req, res, next) {
-        postNewEnquiry(req.body).then(function() {
-            req.flash('success', 'New enquiry has been created successfully')
-            res.redirect('/')
-        }).catch(function(err) {
-            req.flash('error', err.message)
-            res.redirect('/')
-        })
-    })
-
-export default router
+})

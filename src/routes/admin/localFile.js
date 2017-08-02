@@ -4,23 +4,29 @@ import { unlinkSync } from 'fs'
 import { resolve } from 'path'
 
 export default Router()
-.use(function(req, res, next) {
+.use((req, res, next) => {
     // Set global locals params
     res.locals.section = 'localFiles'
     return next()
 })
-.get('/all', function(req, res, next) {
-    LocalFile.find({}).populate('author').sort('-updatedAt').exec()
-    .then(function(localFiles) {
+.get('/all', (req, res, next) => {
+    const page = req.params.page || 0
+    const perPage = req.params.per || 20
+    LocalFile.find({})
+    .skip(page * perPage)
+    .limit(perPage)
+    .populate('author')
+    .sort('-updatedAt').exec()
+    .then((localFiles) => {
         res.render('admin/local-file-list', {
             title: 'All Local Files',
             localFiles,
         })
     })
 })
-.post('/remove', function(req, res, next) {
+.post('/remove', (req, res, next) => {
     LocalFile.findByIdAndRemove(req.body._id).exec()
-    .then(function(result) {
+    .then((result) => {
         if (result) {
             unlinkSync(resolve(__dirname, '../../../static/uploads', result.filename))
             return res.json({
@@ -30,7 +36,7 @@ export default Router()
             })
         }
         throw new Error('Local File was not found')
-    }).catch(function(err) {
+    }).catch((err) => {
         // Log error to standard error output
         console.error(err)
         res.json({

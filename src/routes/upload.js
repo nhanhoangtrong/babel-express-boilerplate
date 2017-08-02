@@ -6,8 +6,6 @@ import multer from 'multer'
 import uuidv1 from 'uuid/v1'
 import LocalFile from '../models/LocalFile'
 
-const router = Router()
-
 const filename = (req, file, cb) => {
     cb(null, `${uuidv1()}${path.extname(file.originalname)}`)
 }
@@ -44,15 +42,14 @@ const multerImages = multer({
 
 const singleLocalFile = (uploadFunc, dirUrl, req, res) => {
     // Creating a single upload file promise
-    new Promise(function(resolve, reject) {
-        uploadFunc(req, res, function(err) {
+    new Promise((resolve, reject) => {
+        uploadFunc(req, res, (err) => {
             if (err) {
-                reject(err)
-            } else {
-                resolve(req.file)
+                return reject(err)
             }
+            return resolve(req.file)
         })
-    }).then(function(file) {
+    }).then((file) => {
         // Check if file was uploaded successfully
         if (file) {
             // Create a new LocalFile instance base on uploaded file
@@ -65,7 +62,7 @@ const singleLocalFile = (uploadFunc, dirUrl, req, res) => {
             })
         }
         throw new Error('File was not found')
-    }).then(function(localFile) {
+    }).then((localFile) => {
         // Check if the LocalFile instance was created or not
         if (localFile) {
             // Response to client
@@ -79,7 +76,7 @@ const singleLocalFile = (uploadFunc, dirUrl, req, res) => {
             })
         }
         throw new Error('LocalFile instance was not exist')
-    }).catch(function(err) {
+    }).catch((err) => {
         // Log to console
         console.error(err)
 
@@ -92,7 +89,7 @@ const singleLocalFile = (uploadFunc, dirUrl, req, res) => {
             code: 500,
             message: err.message,
         })
-    }).catch(function(err) {
+    }).catch((err) => {
         // Log to console if removing error occurred
         console.error(err)
         return res.json({
@@ -103,18 +100,16 @@ const singleLocalFile = (uploadFunc, dirUrl, req, res) => {
     })
 }
 
-router
-.post('/file', function(req, res, next) {
+export default Router()
+.post('/file', (req, res, next) => {
     singleLocalFile(multerFiles.single('file'), '/static/uploads/', req, res)
 })
-.post('/image', function(req, res, next) {
+.post('/image', (req, res, next) => {
     singleLocalFile(multerImages.single('imageFile'), '/static/uploads/images/', req, res)
 })
-.post('/multi-file', function(req, res, next) {
+.post('/multi-file', (req, res, next) => {
     // TODO: Upload multiple files
 })
-.post('/multi-image', function(req, res, next) {
+.post('/multi-image', (req, res, next) => {
     // TODO: Upload multiple images
 })
-
-export default router

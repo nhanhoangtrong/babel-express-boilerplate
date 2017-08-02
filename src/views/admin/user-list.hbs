@@ -25,7 +25,7 @@
     				</thead>
     				<tbody>
                         {{#each users}}
-    					<tr>
+    					<tr id="{{_id}}">
     						<th scope="row">{{inc @index}}</th>
                             <td><a href="/admin/user/{{_id}}">{{firstName}} {{lastName}}</a></td>
                             <td>{{email}}</td>
@@ -53,13 +53,13 @@
                           <h4 class="modal-title">Do you want to remove this user?</h4>
                         </div>
                         <div class="modal-body">
-                          <h4>Ops! You try to remove user <strong id="removingCatName"></strong>!</h4>
+                          <h4>Ops! You try to remove user <strong id="removingUserName"></strong>!</h4>
                           <p>Click Delete to remove it now or Cancel to go back.</p>
                           <input id="removingUserId" hidden style="display: none;">
                         </div>
                         <div class="modal-footer">
                           <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                          <button type="button" class="btn btn-danger" onclick="removeCat()">Delete</button>
+                          <button type="button" class="btn btn-danger" onclick="removeUser()">Delete</button>
                         </div>
                       </div>
                     </div>
@@ -73,12 +73,11 @@
 <script>
 var csrfToken = $('#_csrf').val();
 function confirmRemoveDialog(userId, firstName, lastName) {
-    const fullName = firstName + ' ' + lastName;
     $('#removingUserId').val(userId);
-    $('#removingCatName').html(fullName);
+    $('#removingUserName').html(firstName + ' ' + lastName);
     $('#removeConfirmDialog').modal();
 }
-function removeCat() {
+function removeUser() {
     var userId = $('#removingUserId').val();
     if (userId) {
         var data = {

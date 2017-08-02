@@ -1,25 +1,29 @@
 import { Router } from 'express'
-import { getPostCategoryBySlug } from '../promises/postCategory'
-import { getPostsByCategory } from '../promises/post'
+import Post from '../models/Post'
+import PostCategory from '../models/PostCategory'
 
 const router = Router()
 
-router.get('/:catSlug', function(req, res, next) {
+router.get('/:catSlug', (req, res, next) => {
     let postCategory
-    getPostCategoryBySlug(req.params.catSlug).then(function(cat) {
+    PostCategory.findOne({slug: req.params.catSlug}).exec()
+    .then((cat) => {
         postCategory = cat
-        return getPostsByCategory(cat._id)
-    }).then(function(posts) {
+        return Post.find({categories: cat._id}).exec()
+    })
+    .then((posts) => {
         res.render('home/category', {
             title: postCategory.name,
-            postCategory: postCategory,
-            posts: posts
+            postCategory,
+            posts,
         })
-    }).catch(function(err) {
+    })
+    .catch((err) => {
         console.error(err)
         res.render('home/error', {
             title: 'Error 500',
-            message: err.message
+            message: err.message,
+            error: err,
         })
     })
 })

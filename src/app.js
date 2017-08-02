@@ -22,9 +22,6 @@ import chalk from 'chalk'
  */
 import homeRoute from './routes/home'
 import apiRoute from './routes/api'
-import postRoute from './routes/post'
-import categoryRoute from './routes/category'
-import accountRoute from './routes/account'
 import adminRoute from './routes/admin'
 import ajaxRoute from './routes/ajax'
 
@@ -60,7 +57,7 @@ mongoose.connection.on('error', (err) => {
 import migrate from 'migrate'
 const set = migrate.load(path.resolve(__dirname, '../migrations/.migrate'), path.resolve(__dirname, '../migrations'))
 // auto migrate
-set.up(function(err) {
+set.up((err) => {
     if (err) {
         return console.error(err);
     }
@@ -117,7 +114,7 @@ app.use(passport.session())
 
 // Securing Cross Site Request Forgery (CSRF)
 app.set('trust proxy', 1)
-app.use(function(req, res, next) {
+app.use((req, res, next) => {
     if (req.path.startsWith('/api')) {
         next()
     } else {
@@ -140,9 +137,6 @@ app.use('/static', express.static(path.resolve(__dirname, '../static')))
  * Registering routes goes here
  */
 app.use('/', homeRoute)
-app.use('/post', postRoute)
-app.use('/category', categoryRoute)
-app.use('/account', accountRoute)
 app.use('/admin', adminRoute)
 app.use('/ajax', ajaxRoute)
 app.use('/api', apiRoute)
@@ -151,7 +145,7 @@ app.use('/api', apiRoute)
 /**
  * Handling wrong destination requests
  */
-app.use(function(req, res, next) {
+app.use((req, res, next) => {
     res.status(404).render('home/error', {
         title: 'Error 404',
         user: req.user,

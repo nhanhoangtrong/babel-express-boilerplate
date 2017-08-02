@@ -11,7 +11,7 @@
             <span class="image">
                 <img src="{{image}}" alt="{{title}}" />
             </span>
-            <a href="/category/{{slug}}">
+            <a href="/post/{{slug}}">
                 <h2>{{title}}</h2>
                 <div class="content">
                     <p>{{characterLimit description 150}}</p>
@@ -23,7 +23,5 @@
 </div>
 {{#contentFor "pageScripts"}}
 <script>
-var info = "{{{messages.info}}}"
-console.log(info)
 </script>
 {{/contentFor}}
