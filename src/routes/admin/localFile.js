@@ -1,4 +1,6 @@
 import { Router } from 'express'
+import winston from 'winston'
+
 import LocalFile from '../../models/LocalFile'
 import { unlinkSync } from 'fs'
 import { resolve } from 'path'
@@ -44,7 +46,7 @@ export default Router()
     })
     .catch((err) => {
         // Log error to standard error output
-        console.error(err)
+        winston.error('%j', err)
         res.json({
             status: 'error',
             code: 500,

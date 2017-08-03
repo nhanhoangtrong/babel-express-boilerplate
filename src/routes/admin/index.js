@@ -1,6 +1,7 @@
 import { Router } from 'express'
 import { resolve } from 'path'
 import passport from 'passport'
+import winston from 'winston'
 
 import postAdminRoute from './post'
 import categoryAdminRoute from './category'
@@ -118,7 +119,7 @@ export default Router()
     if (process.env.NODE_ENV === 'development') {
         return next(err)
     }
-    console.error(err)
+    winston.error('%j', err)
     delete err.stack
     return res.render('admin/error', {
         title: 'Error 500',

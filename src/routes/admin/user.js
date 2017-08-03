@@ -1,5 +1,6 @@
 /* eslint-disable no-undef */
 import { Router } from 'express'
+import winston from 'winston'
 
 import Post from '../../models/Post'
 import User from '../../models/User'
@@ -52,7 +53,7 @@ export default Router()
             res.redirect('/admin/user/all')
         })
         .catch((err) => {
-            console.error(err)
+            winston.error('%j', err)
             req.flash('error', err.message)
             // TODO: pass error value into render file
             res.render('admin/user-edit', {
@@ -141,7 +142,7 @@ export default Router()
         res.redirect('/admin/user/all')
     })
     .catch((err) => {
-        console.error(err)
+        winston.error('%j', err)
         req.flash('error', err.message)
         // TODO: pass error value into render file
         res.render('admin/user-edit', {

@@ -1,4 +1,5 @@
 import { Router } from 'express'
+import winston from 'winston'
 import bodyParser from 'body-parser'
 import cors from 'cors'
 
@@ -6,20 +7,13 @@ import User from '../../models/User'
 import PostCategory from '../../models/PostCategory'
 import Post from '../../models/Post'
 
-class NotFound extends Error {
-    constructor() {
-        super('Not Found')
-        this.statusCode = 404
-    }
-}
-
 const onApiSuccess = (req, res, next) => (obj) => {
     if (obj) {
-        return res.json({
+        return res.status(200).json({
             data: obj,
         })
     }
-    return next(new NotFound())
+    return next()
 }
 
 export default Router()
@@ -43,13 +37,21 @@ export default Router()
     .then(onApiSuccess(req, res, next))
     .catch(next)
 })
+// Handle not found error
+.use((req, res, next) => {
+    return res.status(404).send({
+        message: 'Route not found',
+    })
+})
 .use((err, req, res, next) => {
-    if (err.statusCode === 404) {
-        return res.status(404).send({
-            message: err.message,
-        })
+    // Check the environment
+    if (process.env.NODE_ENV === 'development') {
+        return next(err)
     }
+    winston.error('%j', err)
+    delete err.stack
     return res.status(500).send({
         message: err.message,
+        error: err,
     })
 })

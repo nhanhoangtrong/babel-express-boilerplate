@@ -1,5 +1,6 @@
 /* eslint-disable no-undef */
 import { Router } from 'express'
+import winston from 'winston'
 
 import User from '../../models/User'
 import Post from '../../models/Post'
@@ -67,7 +68,7 @@ export default Router()
         res.redirect('/admin/post/all')
     })
     .catch((err) => {
-        console.error(err)
+        winston.error('%j', err)
         req.flash('error', err.message)
         // TODO: pass error value into render file
         res.render('admin/post-edit', {
@@ -103,7 +104,7 @@ export default Router()
         })
     })
     .catch((err) => {
-        console.error(err)
+        winston.error('%j', err)
         res.json({
             status: 'error',
             code: 500,
@@ -149,7 +150,7 @@ export default Router()
         req.flash('success', `Post '${req.body.title}' has been updated successfully`)
         res.redirect(`/admin/post/${req.params.postId}`)
     }).catch((err) => {
-        console.error(err)
+        winston.error('%j', err)
         req.flash('error', err.message)
         // TODO: pass error value into render file
         res.render('admin/post-edit', {

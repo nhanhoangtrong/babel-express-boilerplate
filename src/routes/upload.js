@@ -1,5 +1,7 @@
 /* eslint-disable no-undef */
 import { Router } from 'express'
+import winston from 'winston'
+
 import path from 'path'
 import { unlinkSync } from 'fs'
 import multer from 'multer'
@@ -78,7 +80,7 @@ const singleLocalFile = (uploadFunc, dirUrl, req, res, next) => {
         throw new Error('LocalFile instance was not exist')
     }).catch((err) => {
         // Log to console
-        console.error(err)
+        winston.error('%j', err)
 
         // remove uploaded file on disk if exist
         if (req.file) {
@@ -91,7 +93,7 @@ const singleLocalFile = (uploadFunc, dirUrl, req, res, next) => {
         })
     }).catch((err) => {
         // Log to console if removing error occurred
-        console.error(err)
+        winston.error('%j', err)
         return res.json({
             status: 'error',
             code: 500,

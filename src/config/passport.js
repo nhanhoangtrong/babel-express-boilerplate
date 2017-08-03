@@ -1,4 +1,6 @@
 import passport from 'passport'
+import winston from 'winston'
+
 import LocalStrategy from 'passport-local'
 import User from '../models/User'
 
@@ -18,7 +20,7 @@ passport.deserializeUser((id, done) => {
 passport.use('local', new LocalStrategy({ usernameField: 'email' }, (email, password, done) => {
     User.findOne({ email: email.toLowerCase() }, (err, user) => {
         if (err) {
-            console.error(err)
+            winston.error('%j', err)
             return done(err)
         }
         if (!user) {
@@ -27,7 +29,7 @@ passport.use('local', new LocalStrategy({ usernameField: 'email' }, (email, pass
 
         return user.comparePassword(password, (otherErr, isMatch) => {
             if (otherErr) {
-                console.error(otherErr)
+                winston.error('%j', otherErr)
                 return done(otherErr)
             }
             if (isMatch) {

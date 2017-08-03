@@ -1,5 +1,6 @@
 /* eslint-disable no-undef */
 import { Router } from 'express'
+import winston from 'winston'
 
 import PostCategory from '../../models/PostCategory'
 import Post from '../../models/Post'
@@ -45,7 +46,7 @@ export default Router()
         res.redirect('/admin/category/all')
     })
     .catch((err) => {
-        console.error(err)
+        winston.error('%j', err)
         req.flash('error', `${err.message}`)
         // TODO: pass error value into render file
         res.render('admin/category-edit', {
@@ -120,7 +121,7 @@ export default Router()
         res.redirect('/admin/category/all')
     })
     .catch((err) => {
-        console.error(err)
+        winston.error('%j', err)
         req.flash('error', `${err.message}`)
         // TODO: pass error value into render file
         res.render('admin/category-edit', {
