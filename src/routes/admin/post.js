@@ -9,6 +9,10 @@ export default Router()
 /**
  * Posts section
  */
+.use((req, res, next) => {
+    res.locals.section = 'post'
+    next()
+})
 .get('/all', (req, res, next) => {
     const page = req.query.page
     const perPage = req.query.per
@@ -21,17 +25,10 @@ export default Router()
     .then((posts) => {
         res.render('admin/post-list', {
             title: 'All posts',
-            section: "post",
             posts: posts,
         })
     })
-    .catch((err) => {
-        console.error(err)
-        res.render('admin/error', {
-            title: 'Error',
-            message: 'Error 500'
-        })
-    })
+    .catch(next)
 })
 .get('/new', (req, res, next) => {
     Promise.all([
@@ -41,7 +38,6 @@ export default Router()
     .then(([users, postCategories]) => {
         res.render('admin/post-edit', {
             title: `Create a new post`,
-            section: "post",
             post: {
                 author: {},
                 categories: [],
@@ -51,13 +47,7 @@ export default Router()
             users,
         })
     })
-    .catch((err) => {
-        console.error(err)
-        res.render('admin/error', {
-            title: 'Error',
-            error: 'Error 500',
-        })
-    })
+    .catch(next)
 })
 .post('/new', (req, res, next) => {
     req.body.publishedAt = new Date(req.body.publishedAt).getTime()
@@ -79,25 +69,38 @@ export default Router()
     .catch((err) => {
         console.error(err)
         req.flash('error', err.message)
-        res.redirect('/admin/post/new')
+        // TODO: pass error value into render file
+        res.render('admin/post-edit', {
+            title: `Create a new post`,
+            post: {
+                title: req.body.title,
+                slug: req.body.slug,
+                image: req.body.image,
+                description: req.body.description,
+                author: req.body.author,
+                content: req.body.content,
+                publishedAt: req.body.publishedAt,
+                isPublished: req.body.isPublished,
+                categories: req.body.categories,
+            }
+        })
     })
 })
 .post('/remove', (req, res, next) => {
     Post.findByIdAndRemove(req.body._id)
     .then((removedPost) => {
         if (removedPost) {
-            res.json({
+            return res.json({
                 status: 'ok',
                 code: 200,
                 message: `Post ${removedPost.title} has been removed successfully!`,
             })
-        } else {
-            res.json({
-                status: 'error',
-                code: 404,
-                message: 'Post could not found',
-            })
         }
+        return res.json({
+            status: 'error',
+            code: 404,
+            message: 'Post could not found',
+        })
     })
     .catch((err) => {
         console.error(err)
@@ -115,21 +118,17 @@ export default Router()
         PostCategory.find({}).exec(),
     ])
     .then(([post, users, postCategories]) => {
-        res.render('admin/post-edit', {
-            title: `Edit post "${post.title}"`,
-            section: "post",
-            post,
-            postCategories,
-            users,
-        })
+        if (post) {
+            return res.render('admin/post-edit', {
+                title: `Edit post "${post.title}"`,
+                post,
+                postCategories,
+                users,
+            })
+        }
+        return next()
     })
-    .catch((err) => {
-        console.error(err)
-        res.render('admin/error', {
-            title: 'Error',
-            error: 'Error 500',
-        })
-    })
+    .catch(next)
 })
 .post('/:postId', (req, res, next) => {
     req.body._id = req.params.postId
@@ -152,6 +151,20 @@ export default Router()
     }).catch((err) => {
         console.error(err)
         req.flash('error', err.message)
-        res.redirect(`/admin/post/${req.params.postId}`)
+        // TODO: pass error value into render file
+        res.render('admin/post-edit', {
+            title: `Create a new post`,
+            post: {
+                title: req.body.title,
+                slug: req.body.slug,
+                image: req.body.image,
+                description: req.body.description,
+                author: req.body.author,
+                content: req.body.content,
+                publishedAt: req.body.publishedAt,
+                isPublished: req.body.isPublished,
+                categories: req.body.categories,
+            }
+        })
     })
 })

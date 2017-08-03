@@ -5,27 +5,31 @@ import PostCategory from '../models/PostCategory'
 const router = Router()
 
 router.get('/:catSlug', (req, res, next) => {
+    const page = req.query.page || 0
+    const perPage = req.query.per || 5
     let postCategory
     PostCategory.findOne({slug: req.params.catSlug}).exec()
     .then((cat) => {
-        postCategory = cat
-        return Post.find({categories: cat._id}).exec()
+        if (cat) {
+            postCategory = cat
+            return Post.find({categories: cat._id})
+                .populate('categories')
+                .populate('author')
+                .skip(page * perPage)
+                .limit(perPage)
+                .exec()
+                .then((posts) => {
+                    res.render('home/category', {
+                        title: postCategory.name,
+                        postCategory,
+                        posts,
+                    })
+                })
+        }
+        // TODO: render 'category' not found page
+        next()
     })
-    .then((posts) => {
-        res.render('home/category', {
-            title: postCategory.name,
-            postCategory,
-            posts,
-        })
-    })
-    .catch((err) => {
-        console.error(err)
-        res.render('home/error', {
-            title: 'Error 500',
-            message: err.message,
-            error: err,
-        })
-    })
+    .catch(next)
 })
 
 export default router

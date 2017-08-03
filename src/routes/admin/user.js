@@ -25,14 +25,7 @@ export default Router()
             users: users,
         })
     })
-    .catch((err) => {
-        console.error(err)
-        res.render('admin/error', {
-            title: 'Error',
-            error: 'Error 500',
-            message: err.message,
-        })
-    })
+    .catch(next)
 })
 .get('/new', (req, res, next) => {
     res.render('admin/user-edit', {
@@ -59,8 +52,9 @@ export default Router()
             res.redirect('/admin/user/all')
         })
         .catch((err) => {
-            console.log(err)
+            console.error(err)
             req.flash('error', err.message)
+            // TODO: pass error value into render file
             res.render('admin/user-edit', {
                 title: `Creating a new user`,
                 edittedUser: {
@@ -128,16 +122,9 @@ export default Router()
                 edittedUser: user,
             })
         }
-        throw new Error('User not found')
+        return next()
     })
-    .catch((err) => {
-        console.error(err)
-        res.render('admin/error', {
-            title: 'Error',
-            error: 'Error 500',
-            message: err.message,
-        })
-    })
+    .catch(next)
 })
 .post('/:userId', (req, res, next) => {
     req.body.createdAt = new Date(req.body.createdAt).getTime()
@@ -149,13 +136,14 @@ export default Router()
         isAdmin: req.body.isAdmin,
     })
     .exec()
-    .then(() => {
-        req.flash('success', `User ${req.body.name} has been updated successfully`)
+    .then((user) => {
+        req.flash('success', `User ${user.firstName} ${user.lastName} has been updated successfully`)
         res.redirect('/admin/user/all')
     })
     .catch((err) => {
         console.error(err)
         req.flash('error', err.message)
+        // TODO: pass error value into render file
         res.render('admin/user-edit', {
             title: `Creating a new user`,
             edittedUser: {

@@ -23,6 +23,7 @@ export default Router()
             localFiles,
         })
     })
+    .catch(next)
 })
 .post('/remove', (req, res, next) => {
     LocalFile.findByIdAndRemove(req.body._id).exec()
@@ -35,8 +36,13 @@ export default Router()
                 message: 'LocalFile has been removed successfully',
             })
         }
-        throw new Error('Local File was not found')
-    }).catch((err) => {
+        return res.json({
+            status: 'error',
+            code: 404,
+            message: 'Local File was not found',
+        })
+    })
+    .catch((err) => {
         // Log error to standard error output
         console.error(err)
         res.json({

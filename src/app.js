@@ -10,12 +10,14 @@ import statusMonitor from 'express-status-monitor'
 import bodyParser from 'body-parser'
 import lusca from 'lusca'
 import expressValidator from 'express-validator'
+import errorhandler from 'errorhandler'
 
 import mongoose from 'mongoose'
 
 import connectMongo from 'connect-mongo'
 
 import chalk from 'chalk'
+import winston from 'winston'
 
 /**
  * Import all the routes from ./routes
@@ -46,8 +48,8 @@ const app = express()
 mongoose.Promise = global.Promise
 mongoose.connect(process.env.MONGODB_CONNECT_URI)
 mongoose.connection.on('error', (err) => {
-    console.error(err)
-    console.log('%s - MongoDB connection error. Please make sure MongoDB is running.', chalk.red('Error'))
+    winston.error(err)
+    winston.info('%s - MongoDB connection error. Please make sure MongoDB is running.', chalk.red('Error'))
     process.exit(1)
 })
 
@@ -59,9 +61,9 @@ const set = migrate.load(path.resolve(__dirname, '../migrations/.migrate'), path
 // auto migrate
 set.up((err) => {
     if (err) {
-        return console.error(err);
+        return winston.error(err);
     }
-    return console.log(chalk.green('Migration process successfully!'))
+    return winston.info(chalk.green('Migration process successfully!'))
 })
 
 /**
@@ -119,7 +121,7 @@ app.use((req, res, next) => {
         next()
     } else {
         if (process.env.NODE_ENV === 'development' && req.method.toLowerCase() === 'post') {
-            console.log(req.body)
+            winston.info('%j', req.body)
         }
         lusca.csrf()(req, res, next)
     }
@@ -143,13 +145,52 @@ app.use('/api', apiRoute)
 
 
 /**
- * Handling wrong destination requests
+ * Handling errors
  */
+// Handling 404 not found
 app.use((req, res, next) => {
-    res.status(404).render('home/error', {
+    // AJAX requests
+    if (req.xhr) {
+        return res.status(404).send({
+            message: 'Route not found',
+        })
+    }
+    // Other requests
+    return res.status(404).render('home/error', {
         title: 'Error 404',
-        user: req.user,
+        message: 'Page not found',
     })
 })
+if (process.env.NODE_ENV === 'development') {
+    // only use errorhandler in development
+    app.use((err, req, res, next) => {
+        winston.info('errorhandler')
+        errorhandler()(err, req, res, next)
+    })
+} else {
+    // logging handler
+    app.use((err, req, res, next) => {
+        winston.error(err)
+        return next(err)
+    })
+
+    // client error handler (AJAX)
+    app.use((err, req, res, next) => {
+        if (req.xhr) {
+            return res.status(500).send({
+                error: err,
+            })
+        }
+        return next(err)
+    })
+
+    // server error handler
+    app.use((err, req, res, next) => {
+        if (res.headersSent) {
+            return next(err)
+        }
+        return res.status(500).send()
+    })
+}
 
 export default app

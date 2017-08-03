@@ -6,17 +6,20 @@ import User from '../../models/User'
 import PostCategory from '../../models/PostCategory'
 import Post from '../../models/Post'
 
-const onApiSuccess = (res) => (result) => {
-    if (result) {
-        res.status(200).json(result)
-    } else {
-        res.status(404).send()
+class NotFound extends Error {
+    constructor() {
+        super('Not Found')
+        this.statusCode = 404
     }
 }
 
-const onApiError = (res) => (err) => {
-    console.error(err)
-    res.status(500).send()
+const onApiSuccess = (req, res, next) => (obj) => {
+    if (obj) {
+        return res.json({
+            data: obj,
+        })
+    }
+    return next(new NotFound())
 }
 
 export default Router()
@@ -25,18 +28,28 @@ export default Router()
 // /user route
 .get('/user/:userId', (req, res, next) => {
     User.findById(req.params.userId).exec()
-    .then(onApiSuccess(res))
-    .catch(onApiError(res))
+    .then(onApiSuccess(req, res, next))
+    .catch(next)
 })
 // /category route
 .get('/category/:catId', (req, res, next) => {
     PostCategory.findById(req.params.catId).exec()
-    .then(onApiSuccess(res))
-    .then(onApiError(res))
+    .then(onApiSuccess(req, res, next))
+    .then(next)
 })
 // /post route
 .get('/post/:postId', (req, res, next) => {
     Post.findById(req.params.postId).exec()
-    .then(onApiSuccess(res))
-    .catch(onApiError(res))
+    .then(onApiSuccess(req, res, next))
+    .catch(next)
+})
+.use((err, req, res, next) => {
+    if (err.statusCode === 404) {
+        return res.status(404).send({
+            message: err.message,
+        })
+    }
+    return res.status(500).send({
+        message: err.message,
+    })
 })

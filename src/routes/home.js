@@ -31,19 +31,15 @@ export default Router()
             title: 'Homepage',
             posts,
         })
-    }).catch((err) => {
-        console.error(err)
-        res.render('home/error', {
-            title: 'Error 500',
-        })
     })
+    .catch(next)
 })
 .use('/post', postRoute)
 .use('/category', categoryRoute)
 .use('/account', accountRoute)
 .get('/login', (req, res, next) => {
     if (req.user) {
-        return res.redirect('/')
+        return res.redirect(req.query.ref || '/')
     }
     return res.render('home/login', {
         title: 'Login',
@@ -57,11 +53,11 @@ export default Router()
         // remember for 7 days
         req.session.cookie.maxAge = 3600 * 1000 * 24 * 7
     }
-    return res.redirect('/')
+    return res.redirect(req.query.ref || '/')
 })
 .get('/logout', (req, res, next) => {
     req.logout()
-    res.redirect('/')
+    res.redirect(req.query.ref || '/')
 })
 .get('/posts', (req, res, next) => {
     const perPage = req.query.per || 10
@@ -80,14 +76,8 @@ export default Router()
             posts: posts,
             page: 0,
         })
-    }).catch((err) => {
-        console.error(err)
-        res.render('home/error', {
-            title: 'Error 500',
-            error: err,
-            message: err.message,
-        })
     })
+    .catch(next)
 })
 .get('/about', (req, res, next) => {
     res.render('home/about', {
@@ -103,10 +93,10 @@ export default Router()
     })
     .then((enquiry) => {
         req.flash('success', 'New enquiry has been created successfully')
-        res.redirect('/')
+        res.redirect(req.path)
     })
     .catch((err) => {
         req.flash('error', err.message)
-        res.redirect('/')
+        res.redirect(req.path)
     })
 })

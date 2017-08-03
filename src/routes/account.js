@@ -14,39 +14,55 @@ export default Router()
 })
 .post('/', (req, res, next) => {
     req.body._id = req.user._id
-    if (req.body.password && req.body.password === req.body.repassword) {
-        User.findByIdAndUpdate(req.body._id, {
-            firstName: req.body.firstName,
-            lastName: req.body.lastName,
-            password: req.body.password,
-        })
-        .exec()
-        .then(() => {
-            req.flash('success', 'User profile and password have been updated successfully!')
-            res.redirect('/account')
-        }).catch((err) => {
-            console.error(err)
-            res.render('home/error', {
-                title: 'Error 500',
-                error: 'Error 500',
-                message: 'Something went wrong! Please try later.'
+    if (req.body.password) {
+        if (req.body.password === req.body.repassword) {
+            User.findByIdAndUpdate(req.body._id, {
+                firstName: req.body.firstName,
+                lastName: req.body.lastName,
+                password: req.body.password,
             })
-        })
+            .exec()
+            .then((user) => {
+                req.flash('success', 'User profile and password have been updated successfully!')
+                res.redirect('/account')
+            }).catch((err) => {
+                req.flash('error', err.message)
+                res.render('home/account', {
+                    title: 'Account',
+                    user: {
+                        firstName: req.body.firstName,
+                        lastName: req.body.lastName,
+                    }
+                })
+            })
+        } else {
+            req.flash('error', 'Re-password not match!')
+            res.render('home/account', {
+                title: 'Account',
+                user: {
+                    firstName: req.body.firstName,
+                    lastName: req.body.lastName,
+                }
+            })
+        }
+
     } else {
         User.findByIdAndUpdate(req.body._id, {
             firstName: req.body.firstName,
             lastName: req.body.lastName,
         })
         .exec()
-        .then(() => {
+        .then((user) => {
             req.flash('success', 'User profile has been updated successfully!')
             res.redirect('/account')
         }).catch((err) => {
-            console.error(err)
-            res.render('home/error', {
-                title: 'Error 500',
-                error: 'Error 500',
-                message: 'Something went wrong! Please try later.'
+            req.flash('error', err.message)
+            res.render('home/account', {
+                title: 'Account',
+                user: {
+                    firstName: req.body.firstName,
+                    lastName: req.body.lastName,
+                }
             })
         })
     }

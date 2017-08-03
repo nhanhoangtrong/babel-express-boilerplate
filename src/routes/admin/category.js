@@ -25,13 +25,8 @@ export default Router()
             title: `All Post Categories`,
             postCategories,
         })
-    }).catch((err) => {
-        console.error(err)
-        res.render('admin/error', {
-            title: 'Error',
-            error: 'Error 500',
-        })
     })
+    .catch(next)
 })
 .get('/new', (req, res, next) => {
     res.render('admin/category-edit', {
@@ -48,9 +43,11 @@ export default Router()
     .then((postCategory) => {
         req.flash('success', `Category ${postCategory.name} has been created successfully`)
         res.redirect('/admin/category/all')
-    }).catch((err) => {
+    })
+    .catch((err) => {
         console.error(err)
         req.flash('error', `${err.message}`)
+        // TODO: pass error value into render file
         res.render('admin/category-edit', {
             title: 'Create a new Post Category',
             postCategory: {
@@ -87,7 +84,8 @@ export default Router()
                 message: 'Category was not found!',
             })
         }
-    }).catch((err) => {
+    })
+    .catch((err) => {
         res.json({
             status: 'error',
             code: 500,
@@ -98,11 +96,15 @@ export default Router()
 .get('/:catId', (req, res, next) => {
     PostCategory.findById(req.params.catId).exec()
     .then((postCategory) => {
-        res.render('admin/category-edit', {
-            title: `Edit "${postCategory.name}" category`,
-            postCategory,
-        })
+        if (postCategory) {
+            return res.render('admin/category-edit', {
+                title: `Edit "${postCategory.name}" category`,
+                postCategory,
+            })
+        }
+        return next()
     })
+    .catch(next)
 })
 .post('/:catId', (req, res, next) => {
     req.body._id = req.params.catId
@@ -116,9 +118,11 @@ export default Router()
     .then((postCategory) => {
         req.flash('success', `Category ${postCategory.name} has been updated successfully`)
         res.redirect('/admin/category/all')
-    }).catch((err) => {
+    })
+    .catch((err) => {
         console.error(err)
         req.flash('error', `${err.message}`)
+        // TODO: pass error value into render file
         res.render('admin/category-edit', {
             title: `Edit "${postCategory.name}" category`,
             postCategory: {

@@ -5,6 +5,8 @@ const router = Router()
 
 router.get('/:postSlug', (req, res, next) => {
     Post.findOne({slug: req.params.postSlug})
+    .populate('categories')
+    .populate('author')
     .exec()
     .then((post) => {
         if (post) {
@@ -13,19 +15,10 @@ router.get('/:postSlug', (req, res, next) => {
                 post,
             })
         }
-        return res.render('home/error', {
-            title: 'Error 404',
-            message: 'Page not found',
-        })
+        // TODO: Render 'post not found' page
+        return next()
     })
-    .catch((err) => {
-        console.error(err)
-        res.render('home/error', {
-            title: 'Error 500',
-            error: err,
-            message: err.message,
-        })
-    })
+    .catch(next)
 })
 
 export default router

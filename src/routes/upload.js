@@ -40,7 +40,7 @@ const multerImages = multer({
     }
 })
 
-const singleLocalFile = (uploadFunc, dirUrl, req, res) => {
+const singleLocalFile = (uploadFunc, dirUrl, req, res, next) => {
     // Creating a single upload file promise
     new Promise((resolve, reject) => {
         uploadFunc(req, res, (err) => {
@@ -102,10 +102,10 @@ const singleLocalFile = (uploadFunc, dirUrl, req, res) => {
 
 export default Router()
 .post('/file', (req, res, next) => {
-    singleLocalFile(multerFiles.single('file'), '/static/uploads/', req, res)
+    singleLocalFile(multerFiles.single('file'), '/static/uploads/', req, res, next)
 })
 .post('/image', (req, res, next) => {
-    singleLocalFile(multerImages.single('imageFile'), '/static/uploads/images/', req, res)
+    singleLocalFile(multerImages.single('imageFile'), '/static/uploads/images/', req, res, next)
 })
 .post('/multi-file', (req, res, next) => {
     // TODO: Upload multiple files

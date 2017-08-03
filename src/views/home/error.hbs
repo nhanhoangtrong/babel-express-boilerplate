@@ -3,6 +3,11 @@
 <div class="inner">
     <header>
         <h1 style="color: red;">{{title}}</h1>
-        <p>{{message}}</p>
     </header>
+
+    <section class="box">
+        <h2>{{message}}</h2>
+        {{#if error}}
+        <p>{{error.stack}}</p>
+        {{/if}}
 </div>

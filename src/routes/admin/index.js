@@ -48,17 +48,21 @@ export default Router()
     req.logout()
     res.redirect('/admin/login')
 })
-.post('/login', passport.authenticate('local'), (req, res, next) => {
+.post('/login', passport.authenticate('local',{
+    failureRedirect: '/admin/login',
+}), (req, res, next) => {
+    // TODO: handle unauthorized status
     if (req.isAuthenticated()) {
         if (req.user.checkAdmin()) {
             req.flash('success', 'Administrator logged in successfully')
-            res.redirect('/admin')
+            res.redirect(req.query.ref || '/admin')
         } else {
+            req.flash('error', 'Administrator only')
             res.redirect('/')
         }
     } else {
         req.flash('error', 'Login errors')
-        res.redirect('/admin/login')
+        res.redirect(`/admin/login?ref=${req.query.ref || '/admin'}`)
     }
 })
 /**
@@ -69,7 +73,6 @@ export default Router()
 .use('/category', categoryAdminRoute)
 .use('/user', userAdminRoute)
 .use('/local-file', localFileAdminRoute)
-
 /**
  * Enquiry section
  */
@@ -87,14 +90,7 @@ export default Router()
             enquiries: enquiries
 
         })
-    }).catch((err) => {
-        console.error(err)
-        res.render('admin/error', {
-            title: 'Error',
-            error: 'Error 500',
-            message: err.message,
-        })
-    })
+    }).catch(next)
 })
 /**
  * Settings section
@@ -109,12 +105,24 @@ export default Router()
     res.render('admin/under-construction')
 })
 /**
- * Handling page not found errors
+ * Handling page not found admin errors
  */
 .use((req, res, next) => {
     res.render('admin/error', {
-        title: 'Error',
-        error: 'Error 404',
-        message: 'Ops! Your page is not found.',
+        title: 'Error 404',
+        error: new Error('Page not found'),
+        message: 'Page not found',
+    })
+})
+.use((err, req, res, next) => {
+    if (process.env.NODE_ENV === 'development') {
+        return next(err)
+    }
+    console.error(err)
+    delete err.stack
+    return res.render('admin/error', {
+        title: 'Error 500',
+        error: err,
+        message: 'Internal Server Error',
     })
 })
