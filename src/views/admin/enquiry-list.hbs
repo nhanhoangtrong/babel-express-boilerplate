@@ -7,6 +7,7 @@
     			<div class="clearfix"></div>
     		</div>
     		<div class="x_content">
+                <input type="text" name="_csrf" value="{{_csrf}}" id="_csrf" class="hidden">
     			<table class="table table-hover">
     				<thead>
     					<tr>
@@ -21,7 +22,7 @@
     				</thead>
     				<tbody>
                         {{#each enquiries}}
-    					<tr>
+    					<tr id="{{_id}}">
     						<th scope="row">{{inc @index}}</th>
                             <td>{{name}}</td>
                             <td>{{email}}</td>
@@ -29,7 +30,7 @@
                             <td>{{millisecondsToDate createdAt}}</td>
                             <td>{{content}}</td>
                             <td>
-                                <button class="btn btn-default" onclick="removeEnquiry('{{_id}}')"><i class="fa fa-trash"></i></button>
+                                <button class="btn btn-default" onclick="openConfirmDialog('{{_id}}', '{{name}}')"><i class="fa fa-trash"></i></button>
                             </td>
     					</tr>
                         {{/each}}
@@ -39,10 +40,76 @@
     	</div>
     </div>
 </div>
+
+<div id="removeConfirmDialog" class="modal fade" role="dialog">
+    <div class="modal-dialog modal-md">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                <h4 class="modal-title">Do you want to remove this enquiry?</h4>
+            </div>
+
+            <div class="modal-body">
+                <h4>Ops! You are trying to remove an enquiry from <strong id="removingEnquiryFrom"></strong>!</h4>
+                <p>Click Delete to remove it now or Cancel to go back.</p>
+                <input id="removingEnquiryId" type="text" name="removingEnquiryId" class="hidden">
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-danger" onclick="removeEnquiry()">Delete</button>
+            </div>
+        </div>
+    </div>
+</div>
 {{#contentFor "pageScripts"}}
 <script>
-    function removeEnquiry(id) {
-        console.log('remove ' + id)
+    function removeEnquiry() {
+        var id = $('#removingEnquiryId').val();
+        if (id) {
+            var data = {
+                _id: id,
+                _csrf: $('#_csrf').val(),
+            };
+            $.ajax({
+                url: '/admin/enquiry/remove',
+                type: 'POST',
+                data: data,
+                success: function(res) {
+                    $('#removeConfirmDialog').modal('hide');
+                    if (res.status === 'ok') {
+                        $('#' + id).remove();
+                        $('#messages').html(
+                            '<div class="alert alert-success alert-dismissible fade in" role="alert">' +
+                                '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>' +
+                                '<strong>Success! </strong>' + res.message +
+                            '</div>'
+                        );
+                    } else {
+                        $('#messages').html(
+                            '<div class="alert alert-danger alert-dismissible fade in" role="alert">' +
+                                '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>' +
+                                '<strong>Error! </strong>' + res.message +
+                            '</div>'
+                        );
+                    }
+                },
+                error: function(err) {
+                    $('#removeConfirmDialog').modal('hide');
+                    $('#messages').html(
+                        '<div class="alert alert-danger alert-dismissible fade in" role="alert">' +
+                            '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>' +
+                            '<strong>Error! </strong>' + err.message +
+                        '</div>'
+                    );
+                }
+            })
+        }
+    }
+    function openConfirmDialog(id, from) {
+        $('#removingEnquiryId').val(id);
+        $('#removingEnquiryFrom').html(from);
+        $('#removeConfirmDialog').modal();
     }
 </script>
 {{/contentFor}}

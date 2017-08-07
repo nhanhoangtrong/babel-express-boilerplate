@@ -8,6 +8,7 @@ import categoryAdminRoute from './category'
 import userAdminRoute from './user'
 import uploadAdminRoute from '../upload'
 import localFileAdminRoute from './localFile'
+import enquiryAdminRoute from './enquiry'
 
 import Enquiry from '../../models/Enquiry'
 
@@ -77,22 +78,7 @@ export default Router()
 /**
  * Enquiry section
  */
-.get('/enquiry/all', (req, res, next) => {
-    const page = req.query.page || 0
-    const perPage = req.query.per || 20
-    Enquiry.find({})
-    .skip(page * perPage)
-    .limit(perPage)
-    .exec()
-    .then((enquiries) => {
-        res.render('admin/enquiry-list', {
-            title: 'All Enquiries',
-            section: 'enquiry',
-            enquiries: enquiries
-
-        })
-    }).catch(next)
-})
+.use('/enquiry', enquiryAdminRoute)
 /**
  * Settings section
  */
