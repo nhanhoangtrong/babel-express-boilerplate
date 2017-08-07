@@ -52,6 +52,7 @@ export default Router()
 })
 .post('/login', passport.authenticate('local',{
     failureRedirect: '/admin/login',
+    failureFlash: 'Email or Password not matched',
 }), (req, res, next) => {
     // TODO: handle unauthorized status
     if (req.isAuthenticated()) {

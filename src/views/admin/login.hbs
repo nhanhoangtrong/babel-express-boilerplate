@@ -32,6 +32,30 @@
           <section class="login_content">
             <form action="" method="post">
               <h1>Login Form</h1>
+              {{#if messages}}
+              <ul class="list-unstyled">
+                  {{#if messages.info}}
+                  <li class="alert alert-info">
+                      <strong>Information!</strong> {{{messages.info}}}
+                  </li>
+                  {{/if}}
+                  {{#if messages.success}}
+                  <li class="alert alert-success">
+                      <strong>Success!</strong> {{{messages.success}}}
+                  </li>
+                  {{/if}}
+                  {{#if messages.warning}}
+                  <li class="alert alert-warning">
+                      <strong>Warning!</strong> {{{messages.warning}}}
+                  </li>
+                  {{/if}}
+                  {{#if messages.error}}
+                  <li class="alert alert-danger">
+                      <strong>Error!</strong> {{{messages.error}}}
+                  </li>
+                  {{/if}}
+              </ul>
+              {{/if}}
               <div>
                 <input type="text" name="email" class="form-control" placeholder="Email" required="" />
               </div>
