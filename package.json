@@ -7,7 +7,7 @@
   "author": "Nhan Hoang <siege250294@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "start": "node ./dist/index.js",
+    "start": "babel src --copy-files --out-dir dist --source-maps inline && node ./dist/index.js",
     "test": "mocha",
     "dev": "nodemon ./dist/index.js --watch dist",
     "watch": "babel --watch src --copy-files --out-dir dist --source-maps inline",
