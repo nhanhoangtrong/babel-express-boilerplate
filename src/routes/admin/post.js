@@ -15,8 +15,8 @@ export default Router()
     next()
 })
 .get('/all', (req, res, next) => {
-    const page = req.query.page
-    const perPage = req.query.per
+    const page = parseInt(req.query.page) || 0
+    const perPage = parseInt(req.query.per) || 20
     Post.find({})
     .skip(page * perPage)
     .limit(perPage)

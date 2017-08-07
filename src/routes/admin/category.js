@@ -14,8 +14,10 @@ export default Router()
     next()
 })
 .get('/all', (req, res, next) => {
-    const page = req.params.page || 0
-    const perPage = req.params.per || 20
+    const page = parseInt(req.query.page) || 0
+    const perPage = parseInt(req.query.per) || 20
+    winston.info(`page: ${page} and perPage: ${perPage}`)
+
     PostCategory
     .find({})
     .skip(page * perPage)

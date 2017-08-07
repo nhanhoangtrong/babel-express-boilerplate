@@ -16,8 +16,8 @@ export default Router()
     next()
 })
 .get('/', (req, res, next) => {
-    const perPage = req.query.per || 10
-    const page = req.query.page || 0
+    const page = parseInt(req.query.page) || 0
+    const perPage = parseInt(req.query.per) || 5
     Post
     .find({isPublished: true})
     .populate('categories')
@@ -48,6 +48,7 @@ export default Router()
 })
 .post('/login', passport.authenticate('local', {
     failureRedirect: '/login',
+    failureFlash: 'Email or Passowrd not matched',
 }), (req, res, next) => {
     if (req.body.remember) {
         // remember for 7 days
