@@ -1,7 +1,7 @@
 'use strict'
 
 const mongoose = require('mongoose');
-const User = mongoose.model('User');
+const User = mongoose.model('User') || require('../dist/models/User');
 
 exports.up = function(next) {
     const admin = new User({
