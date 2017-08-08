@@ -8,6 +8,8 @@
 
     <section class="box">
         <h2>There are {{posts.length}} posts in this category.</h2>
-        {{> post-list }}
+        {{#each posts}}
+            {{> home/post-simple }}
+        {{/each}}
     </section>
 </div>
