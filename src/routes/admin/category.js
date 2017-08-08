@@ -14,19 +14,26 @@ export default Router()
     next()
 })
 .get('/all', (req, res, next) => {
-    const page = parseInt(req.query.page) || 0
+    const page = parseInt(req.query.page) || 1
     const perPage = parseInt(req.query.per) || 20
-    winston.info(`page: ${page} and perPage: ${perPage}`)
 
     PostCategory
-    .find({})
-    .skip(page * perPage)
-    .limit(perPage)
+    .count()
     .exec()
-    .then((postCategories) => {
-        res.render('admin/category-list', {
-            title: `All Post Categories`,
-            postCategories,
+    .then((nCategories) => {
+        const nPages = Math.ceil(nCategories / perPage)
+        return PostCategory
+        .find({})
+        .skip((page - 1) * perPage)
+        .limit(perPage)
+        .exec()
+        .then((postCategories) => {
+            res.render('admin/category-list', {
+                title: `All Post Categories`,
+                postCategories,
+                currentPage: page,
+                nPages,
+            })
         })
     })
     .catch(next)

@@ -28,6 +28,32 @@
                         {{/each}}
     				</tbody>
     			</table>
+
+                <ul class="pagination pull-right">
+                    {{#ifeq currentPage 1}}
+                        <li class="previous disabled">
+                            <a href="#">Previous</a>
+                        </li>
+                    {{else}}
+                        <li class="previous">
+                            <a href="?page={{desc currentPage}}&per=10">Previous</a>
+                        </li>
+                    {{/ifeq}}
+                    {{#range nPages}}
+                    <li {{#ifeq @element currentPage}}class="active"{{/ifeq}}>
+                        <a href="?page={{@element}}&per=10">{{@element}}</a>
+                    </li>
+                    {{/range}}
+                    {{#ifeq currentPage nPages}}
+                        <li class="next disabled">
+                            <a href="#">Next</a>
+                        </li>
+                    {{else}}
+                        <li class="next">
+                            <a href="?page={{inc currentPage}}&per=10">Next</a>
+                        </li>
+                    {{/ifeq}}
+                </ul>
     		</div>
     	</div>
     </div>
