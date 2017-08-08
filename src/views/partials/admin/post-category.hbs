@@ -1,0 +1,37 @@
+<tr class="tr-detail" data-id="{{_id}}">
+    <th scope="row">{{inc @index}}</th>
+    <td>
+        {{name}}
+    </td>
+    <td>
+        <a href="/category/{{slug}}">{{slug}}</a>
+    </td>
+    <td>
+        <p>{{description}}</p>
+    </td>
+    <td>
+        <button class="btn btn-default" data-toggle="collapse" onclick="toggleEdit(this)"><i class="fa fa-gear"></i></button>
+        <button class="btn btn-default" onclick="openConfimRemoveDialog(this)"><i class="fa fa-trash"></i></button>
+    </td>
+</tr>
+<tr class="hidden tr-edit" data-id="{{_id}}">
+    <th scope="row">
+        {{inc @index}}
+    </th>
+    <td>
+        <input class="form-control" type="text" name="name" value="{{name}}">
+    </td>
+    <td>
+        <input class="form-control" type="text" name="slug" value="{{slug}}">
+    </td>
+    <td>
+        <input class="form-control" type="text" name="description" value="{{description}}">
+    </td>
+    <td>
+        <button type="button" class="btn btn-success"><i class="fa fa-check" aria-hidden="true" onclick="confirmEdit(this)"></i></button>
+        <button type="button" class="btn btn-default" onclick="cancelEdit(this)"><i class="fa fa-close"></i></button>
+    </td>
+</tr>
+<tr class="hidden tr-loading">
+    <td colspan="5"><i class="fa fa-spin fa-circle-o-notch"></i></td>
+</tr>

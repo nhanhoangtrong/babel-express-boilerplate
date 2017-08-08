@@ -96,6 +96,45 @@ export default Router()
         })
     })
 })
+.post('/edit', (req, res, next) => {
+    PostCategory.findByIdAndUpdate(req.body._id, {
+        name: req.body.name,
+        slug: req.body.slug,
+        description: req.body.description,
+    }, {
+        runValidators: true,
+    })
+    .exec()
+    .then((postCategory) => {
+        if (postCategory) {
+            return res.json({
+                status: 'ok',
+                code: 200,
+                message: 'Post Category has been updated successfully',
+                data: {
+                    postCategory: {
+                        name: req.body.name,
+                        slug: req.body.slug,
+                        description: req.body.description,
+                    },
+                },
+            })
+        }
+        return res.json({
+            status: 'error',
+            code: 404,
+            message: 'Post Category was not found',
+        })
+    })
+    .catch((err) => {
+        winston.error(err)
+        res.json({
+            status: 'error',
+            code: 500,
+            message: 'Internal Server Error',
+        })
+    })
+})
 .get('/:catId', (req, res, next) => {
     PostCategory.findById(req.params.catId).exec()
     .then((postCategory) => {
