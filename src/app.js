@@ -31,6 +31,8 @@ import * as passportConfig from './config/passport'
 import passport from 'passport'
 import registerAllHelpers from './views/helpers'
 
+import migrate from 'migrate'
+
 /**
  * Load the .env file
  */
@@ -56,15 +58,16 @@ mongoose.connection.on('error', (err) => {
 /**
  * Running the migrations
  */
-import migrate from 'migrate'
-const set = migrate.load(path.resolve(__dirname, '../migrations/.migrate'), path.resolve(__dirname, '../migrations'))
-// auto migrate
-set.up((err) => {
-    if (err) {
-        return winston.error(err);
-    }
-    return winston.info(chalk.green('Migration process successfully!'))
-})
+if (process.env.AUTO_MIGRATE) {
+    const set = migrate.load(path.resolve(__dirname, '../migrations/.migrate'), path.resolve(__dirname, '../migrations'))
+    // auto migrate
+    set.up((err) => {
+        if (err) {
+            return winston.error(err);
+        }
+        return winston.info(chalk.green('Migration process successfully!'))
+    })
+}
 
 /**
  * Setting the default configurations for express application
