@@ -6,10 +6,8 @@ const chaiHTTP = require('chai-http');
 
 const server = require('../dist/app').default;
 
-server.listen(3001);
-
 chai.should();
-chai.use(chaiHTTP)
+chai.use(chaiHTTP);
 
 describe('These are APIs tests', () => {
     it('It shoud return a list of users', (done) => {
