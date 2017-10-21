@@ -27,11 +27,12 @@ import apiRoute from './routes/api'
 import adminRoute from './routes/admin'
 import ajaxRoute from './routes/ajax'
 
-import * as passportConfig from './config/passport'
+import * as passportConfig from './middlewares/passport'
 import passport from 'passport'
-import registerAllHelpers from './views/helpers'
 
 import migrate from 'migrate'
+
+import './views/helpers'
 
 /**
  * Load the .env file
@@ -83,14 +84,14 @@ app.set('view engine', 'hbs')
 /**
  * Registering all custom Handlebars helpers
  */
-registerAllHelpers(hbs)
+// registerAllHelpers(hbs)
 
 /**
  * Registering global middlewares goes here
  */
 
 // Morgan for logging requests and responses
-app.use(morgan('dev'))
+app.use(morgan(process.env.NODE_ENV === 'development' ? 'dev' : 'combined'))
 app.use(statusMonitor())
 
 // Express session

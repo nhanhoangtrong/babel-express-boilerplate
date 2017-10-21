@@ -9,8 +9,8 @@ export default Router()
     next()
 })
 .get('/all', (req, res, next) => {
-    const page = parseInt(req.query.page) || 0
-    const perPage = parseInt(req.query.per) || 20
+    const page = parseInt(req.query.page, 10) || 0
+    const perPage = parseInt(req.query.per, 10) || 20
     Enquiry
     .find({})
     .skip(page * perPage)

@@ -1,7 +1,7 @@
 /* eslint-disable no-undef */
 import { Router } from 'express'
 import passport from 'passport'
-import { isAuthenticated } from '../config/passport'
+import { isAuthenticated } from '../middlewares/passport'
 import User from '../models/User'
 
 export default Router()
@@ -45,7 +45,6 @@ export default Router()
                 }
             })
         }
-
     } else {
         User.findByIdAndUpdate(req.body._id, {
             firstName: req.body.firstName,

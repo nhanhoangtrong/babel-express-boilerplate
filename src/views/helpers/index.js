@@ -46,10 +46,13 @@ const helpers = {
     }
 }
 
-export default (hbs) => {
+function registerHelpers(hbsRenderer) {
     for (const key in helpers) {
         if (helpers.hasOwnProperty(key)) {
-            hbs.registerHelper(key, helpers[key])
+            hbsRenderer.registerHelper(key, helpers[key])
         }
     }
 }
+
+// Register helpers for hbs
+registerHelpers(hbs);

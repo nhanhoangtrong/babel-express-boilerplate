@@ -27,7 +27,7 @@ router.get('/:catSlug', (req, res, next) => {
                 })
         }
         // TODO: render 'category' not found page
-        next()
+        return next()
     })
     .catch(next)
 })

@@ -16,8 +16,8 @@ export default Router()
     next()
 })
 .get('/', (req, res, next) => {
-    const page = parseInt(req.query.page) || 0
-    const perPage = parseInt(req.query.per) || 5
+    const page = parseInt(req.query.page, 10) || 0
+    const perPage = parseInt(req.query.per, 10) || 5
     Post
     .find({isPublished: true})
     .populate('categories')

@@ -50,7 +50,7 @@ export default Router()
     req.logout()
     res.redirect('/admin/login')
 })
-.post('/login', passport.authenticate('local',{
+.post('/login', passport.authenticate('local', {
     failureRedirect: '/admin/login',
     failureFlash: 'Email or Password not matched',
 }), (req, res, next) => {
