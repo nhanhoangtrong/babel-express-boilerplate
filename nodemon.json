@@ -1,0 +1,8 @@
+{
+    "verbose": true,
+    "exec": "babel-node src/index.js",
+    "ext": "js jsx json",
+    "watch": [
+        "src"
+    ]
+}

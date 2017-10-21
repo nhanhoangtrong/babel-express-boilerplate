@@ -9,7 +9,8 @@
   "scripts": {
     "start": "babel src --copy-files --out-dir dist --source-maps inline && node ./dist/index.js",
     "test": "mocha",
-    "dev": "nodemon ./dist/index.js --watch dist",
+    "dev:watch": "nodemon ./dist/index.js --watch dist",
+    "dev:babel": "nodemon",
     "watch": "babel --watch src --copy-files --out-dir dist --source-maps inline",
     "build": "babel src --copy-files --out-dir dist --source-maps inline",
     "migrate": "migrate",
