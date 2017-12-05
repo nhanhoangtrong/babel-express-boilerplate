@@ -12,7 +12,9 @@ const filename = (req, file, cb) => {
 
 const multerFiles = multer({
     storage: multer.diskStorage({
-        destination: process.env.UPLOAD_FILES_FOLDER || path.resolve(__dirname, '../../static/uploads/'),
+        destination: (req, file, cb) => {
+            cb(null, req.app.get('uploadsDir'));
+        },
         filename,
     }),
     limits: {
@@ -22,7 +24,9 @@ const multerFiles = multer({
 
 const multerImages = multer({
     storage: multer.diskStorage({
-        destination: process.env.UPLOAD_IMAGES_FOLDER || path.resolve(__dirname, '../../static/uploads/images/'),
+        destination: (req, file, cb) => {
+            cb(null, join(req.app.get('uploadsDir'), 'images'));
+        },
         filename,
     }),
     limits: {
@@ -100,16 +104,18 @@ const singleLocalFile = (uploadFunc, dirUrl, req, res, next) => {
     });
 };
 
-export default Router()
-.post('/file', (req, res, next) => {
-    singleLocalFile(multerFiles.single('file'), '/static/uploads/', req, res, next);
-})
-.post('/image', (req, res, next) => {
-    singleLocalFile(multerImages.single('imageFile'), '/static/uploads/images/', req, res, next);
-})
-.post('/multi-file', (req, res, next) => {
-    // TODO: Upload multiple files
-})
-.post('/multi-image', (req, res, next) => {
-    // TODO: Upload multiple images
-});
+const router = Router()
+    .post('/file', (req, res, next) => {
+        singleLocalFile(multerFiles.single('file'), '/static/uploads/', req, res, next);
+    })
+    .post('/image', (req, res, next) => {
+        singleLocalFile(multerImages.single('imageFile'), '/static/uploads/images/', req, res, next);
+    })
+    .post('/multi-file', (req, res, next) => {
+        // TODO: Upload multiple files
+    })
+    .post('/multi-image', (req, res, next) => {
+        // TODO: Upload multiple images
+    });
+
+export default router;

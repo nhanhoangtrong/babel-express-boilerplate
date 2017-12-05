@@ -30,7 +30,7 @@ export default Router()
             }
             return res.redirect('/');
         }
-        return res.redirect('/admin/login');
+        return res.redirect(`/admin/login?ref=${req.path}`);
     })
     .get('/', (req, res, next) => {
         res.render('admin/dashboard', {
@@ -103,7 +103,7 @@ export default Router()
         if (process.env.NODE_ENV === 'development') {
             return next(err);
         }
-        logger.error('%j', err);
+        logger.error(JSON.stringify(err.stack, null, 2));
         delete err.stack;
         return res.render('admin/error', {
             title: 'Error 500',

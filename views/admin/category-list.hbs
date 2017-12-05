@@ -17,6 +17,7 @@
     					<tr>
     						<th>#</th>
     						<th>Name</th>
+                            <th>Default</th>
     						<th>Slug</th>
                             <th>Description</th>
                             <th>Actions</th>
@@ -184,7 +185,9 @@ function showEditCategoryForm(isCreating, id) {
     }
 }
 function openConfimRemoveDialog(btn) {
-    $(btn).parent()
+    var tableData = $(btn).parent().parent();
+    var catId = tableData.data('id');
+    var catName = tableData.data('name');
     $('#removingCatId').val(catId);
     $('#removingCatName').html(catName);
     $('#removeConfirmDialog').modal();

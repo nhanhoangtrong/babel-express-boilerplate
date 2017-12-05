@@ -8,26 +8,25 @@ export default Router()
         res.locals.section = 'enquiry';
         next();
     })
-    .get('/all', (req, res, next) => {
+    .get('/', async (req, res, next) => {
         const page = parseInt(req.query.page, 10) || 0;
         const perPage = parseInt(req.query.per, 10) || 20;
-        Enquiry
-        .find({})
-        .skip(page * perPage)
-        .limit(perPage)
-        .exec()
-        .then((enquiries) => {
+        try {
+            const total = await Enquiry.find({}).count().exec();
+            const enquiries = await Enquiry.find({}).skip(page * perPage).limit(perPage).exec();
             res.render('admin/enquiry-list', {
                 title: 'All Enquiries sent by customers',
                 enquiries,
+                nPages: Math.ceil(total / perPage),
             });
-        })
-        .catch(next);
+        } catch(err) {
+            next(err);
+        }
     })
-    .post('/remove', (req, res, next) => {
+    .post('/remove', async (req, res, next) => {
         const id = req.body._id || req.query._id;
-        Enquiry.findByIdAndRemove(id).exec()
-        .then((enquiry) => {
+        try {
+            const enquiry = await Enquiry.findByIdAndRemove(id).exec();
             if (enquiry) {
                 return res.json({
                     status: 'ok',
@@ -37,11 +36,10 @@ export default Router()
             }
             return res.json({
                 status: 'error',
-                code: 404,
+                code: 400,
                 message: 'Enquiry was not found',
             });
-        })
-        .catch((err) => {
+        } catch (err) {
             // Log error to standard error output
             logger.error('%j', err);
             res.json({
@@ -49,5 +47,5 @@ export default Router()
                 code: 500,
                 message: err.message,
             });
-        });
+        }
     });

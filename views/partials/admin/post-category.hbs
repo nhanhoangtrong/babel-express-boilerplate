@@ -1,7 +1,10 @@
-<tr class="tr-detail" data-id="{{_id}}">
+<tr class="tr-detail" data-id="{{_id}}" data-name="{{name}}">
     <th scope="row">{{inc @index}}</th>
     <td>
         {{name}}
+    </td>
+    <td>
+        <input class="form-control" type="checkbox" {{#if default}}checked{{/if}}>
     </td>
     <td>
         <a href="/category/{{slug}}">{{slug}}</a>
@@ -20,6 +23,9 @@
     </th>
     <td>
         <input class="form-control" type="text" name="name" value="{{name}}">
+    </td>
+    <td>
+        <input class="form-control" type="checkbox" {{#if default}} checked {{/if}}>
     </td>
     <td>
         <input class="form-control" type="text" name="slug" value="{{slug}}">

@@ -3,30 +3,32 @@ import logger from '../logger';
 
 import { Post, User } from '../models';
 
-export default Router()
+const router = Router();
 /**
  * User section
  */
-.use((req, res, next) => {
+router.use((req, res, next) => {
     res.locals.section = 'users';
     next();
-})
-.get('/all', (req, res, next) => {
-    const page = parseInt(req.query.page, 10) || 0;
-    const perPage = parseInt(req.query.per, 10) || 20;
-    User.find({})
-    .skip(page * perPage)
-    .limit(perPage)
-    .exec()
-    .then((users) => {
+}).get('/all', async (req, res, next) => {
+    try {
+        const page = parseInt(req.query.page, 10) || 0;
+        const perPage = parseInt(req.query.per, 10) || 20;
+        const users = await User.find({})
+            .skip(page * perPage)
+            .limit(perPage)
+            .exec();
+        const total = await User.find({}).count().exec();
+
         res.render('admin/user-list', {
             title: 'All Users',
             users: users,
+            nPages: Math.ceil(total / perPage),
         });
-    })
-    .catch(next);
-})
-.get('/new', (req, res, next) => {
+    } catch (err) {
+        next(err);
+    }
+}).get('/new', (req, res, next) => {
     res.render('admin/user-edit', {
         title: `Creating a new user`,
         section: 'users',
@@ -34,61 +36,43 @@ export default Router()
             createdAt: Date.now(),
         },
     });
-})
-.post('/new', (req, res, next) => {
-    if (req.body.password === req.body.repassword) {
-        req.body.createdAt = new Date(req.body.createdAt).getTime();
+}).post('/new', async (req, res, next) => {
+    try {
+        if (req.body.password !== req.body.repassword) {
+            throw new Error('Re-type password does not match.');
+        }
 
-        User.create({
+        const user = await User.create({
             firstName: req.body.firstName,
             lastName: req.body.lastName,
             email: req.body.email,
             password: req.body.password,
             isAdmin: req.body.isAdmin,
-        })
-        .then((user) => {
-            req.flash('success', `User ${user.firstName} has been created successfully`);
-            res.redirect('/admin/user/all');
-        })
-        .catch((err) => {
-            logger.error('%j', err);
-            req.flash('error', err.message);
-            // TODO: pass error value into render file
-            res.render('admin/user-edit', {
-                title: `Creating a new user`,
-                edittedUser: {
-                    firstName: req.body.firstName,
-                    lastName: req.body.lastName,
-                    email: req.body.email,
-                    createdAt: req.body.createdAt,
-                    isAdmin: req.body.isAdmin,
-                },
-            });
+            createdAt: new Date(req.body.createdAt).getTime(),
         });
-    } else {
-        req.flash('error', 'Re-type password does not match.');
+        req.flash('success', `User ${user.firstName} has been created successfully`);
+        res.redirect('/admin/user/all');
+    } catch (err) {
+        logger.error(JSON.stringify(err, null, 2));
+        req.flash('error', err.message);
+        // TODO: pass error value into render file
         res.render('admin/user-edit', {
             title: `Creating a new user`,
             edittedUser: {
                 firstName: req.body.firstName,
                 lastName: req.body.lastName,
                 email: req.body.email,
-                createdAt: req.body.createdAt,
+                createdAt: new Date(req.body.createdAt).getTime(),
                 isAdmin: req.body.isAdmin,
             },
         });
     }
-})
-.post('/remove', (req, res, next) => {
-    const userId = req.body._id;
+}).post('/remove', async (req, res, next) => {
+    try {
+        const userId = req.body._id;
 
-    Promise.all([
-        User.findByIdAndRemove(userId).exec(),
-        Post.deleteMany({
-            author: userId,
-        }).exec(),
-    ])
-    .then(([removedUser, removedPosts]) => {
+        const removedUser = await User.findByIdAndRemove(userId).exec();
+        const raw = await Post.deleteMany({ author: userId }).exec();
         if (removedUser) {
             res.json({
                 status: 'ok',
@@ -98,23 +82,21 @@ export default Router()
         } else {
             res.json({
                 status: 'error',
-                code: 404,
+                code: 400,
                 message: 'User was not found!',
             });
         }
-    })
-    .catch((err) => {
+    } catch (err) {
+        logger.error(JSON.stringify(err, null, 2));
         res.json({
             status: 'error',
             code: 500,
             message: err.message,
         });
-    });
-})
-.get('/:userId', (req, res, next) => {
-    User.findById(req.params.userId)
-    .exec()
-    .then((user) => {
+    }
+}).get('/:userId', async (req, res, next) => {
+    try {
+        const user = await User.findById(req.params.userId).exec();
         if (user) {
             return res.render('admin/user-edit', {
                 title: `Editing user ${user.firstName} ${user.lastName}`,
@@ -122,30 +104,30 @@ export default Router()
             });
         }
         return next();
-    })
-    .catch(next);
-})
-.post('/:userId', (req, res, next) => {
-    req.body.createdAt = new Date(req.body.createdAt).getTime();
-    User.findByIdAndUpdate(req.params.userId, {
-        firstName: req.body.firstName,
-        lastName: req.body.lastName,
-        email: req.body.email,
-        password: req.body.password,
-        isAdmin: req.body.isAdmin,
-    })
-    .exec()
-    .then((user) => {
+    } catch (err) {
+        return next(err);
+    }
+}).post('/:userId', async (req, res, next) => {
+    try {
+        req.body.createdAt = new Date(req.body.createdAt).getTime();
+        const user = await User.findByIdAndUpdate(req.params.userId, {
+            firstName: req.body.firstName,
+            lastName: req.body.lastName,
+            email: req.body.email,
+            password: req.body.password,
+            isAdmin: req.body.isAdmin,
+        }).exec();
+
         req.flash('success', `User ${user.firstName} ${user.lastName} has been updated successfully`);
         res.redirect('/admin/user/all');
-    })
-    .catch((err) => {
-        logger.error('%j', err);
+    } catch (err) {
+        logger.error(JSON.stringify(err, null, 2));
         req.flash('error', err.message);
         // TODO: pass error value into render file
         res.render('admin/user-edit', {
-            title: `Creating a new user`,
+            title: `Editing user ${req.body.firstName} ${req.body.lastName}`,
             edittedUser: {
+                _id: req.params.userId,
                 firstName: req.body.firstName,
                 lastName: req.body.lastName,
                 email: req.body.email,
@@ -153,5 +135,7 @@ export default Router()
                 isAdmin: req.body.isAdmin,
             },
         });
-    });
+    }
 });
+
+export default router;

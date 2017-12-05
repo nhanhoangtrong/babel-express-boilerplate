@@ -16,7 +16,5 @@ exports.up = function (next) {
 };
 
 exports.down = function (next) {
-    User.deleteOne({
-        email: 'admin@localhost'
-    }, next);
+    User.deleteMany({}, next);
 };

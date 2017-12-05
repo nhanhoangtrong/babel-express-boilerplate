@@ -16,7 +16,7 @@ passport.deserializeUser((id, done) => {
 /**
  * Local strategy using Email and Password
  */
-passport.use('local', new LocalStrategy({ usernameField: 'email' }, (email, password, done) => {
+export const localStrategy =  new LocalStrategy({ usernameField: 'email' }, (email, password, done) => {
     User.findOne({ email: email.toLowerCase() }, (err, user) => {
         if (err) {
             logger.error('%j', err);
@@ -37,14 +37,4 @@ passport.use('local', new LocalStrategy({ usernameField: 'email' }, (email, pass
             return done(null, false, { msg: 'Invalid email or password.' });
         });
     });
-}));
-
-/**
- * Login required middleware
- */
-export const isAuthenticated = (req, res, next) => {
-    if (req.isAuthenticated()) {
-        return next();
-    }
-    return res.redirect(`/login?ref=${req.path}`);
-};
+});

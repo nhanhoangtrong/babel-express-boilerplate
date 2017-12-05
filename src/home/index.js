@@ -17,20 +17,20 @@ export default Router()
     const page = parseInt(req.query.page, 10) || 0;
     const perPage = parseInt(req.query.per, 10) || 5;
     Post
-    .find({isPublished: true})
-    .populate('categories')
-    .populate('author')
-    .sort({publishedAt: -1})
-    .skip(page * perPage)
-    .limit(perPage)
-    .exec()
-    .then((posts) => {
-        res.render('home/index', {
-            title: 'Homepage',
-            posts,
-        });
-    })
-    .catch(next);
+        .find({isPublished: true})
+        .populate('categories')
+        .populate('author')
+        .sort({publishedAt: -1})
+        .skip(page * perPage)
+        .limit(perPage)
+        .exec()
+        .then((posts) => {
+            res.render('home/index', {
+                title: 'Homepage',
+                posts,
+            });
+        })
+        .catch(next);
 })
 .use('/post', postRoute)
 .use('/category', categoryRoute)

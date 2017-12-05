@@ -81,6 +81,14 @@ postSchema.pre('save', function (next) {
     next();
 });
 
+postSchema.pre('remove', function (next) {
+    if (!this.default) {
+        return next();
+    }
+    const err = new Error('Cannot remove default category.');
+    return next(err);
+});
+
 /**
  * Telling post model to indexing the fields
  */

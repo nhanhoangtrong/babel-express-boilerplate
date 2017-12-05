@@ -11,6 +11,7 @@ import lusca from 'lusca';
 import expressValidator from 'express-validator';
 import errorhandler from 'errorhandler';
 import passport from 'passport';
+import cookieParser from 'cookie-parser';
 
 import mongoose from 'mongoose';
 import connectMongo from 'connect-mongo';
@@ -28,6 +29,8 @@ import adminRoute from './admin';
 import ajaxRoute from './ajax';
 
 import { hbsHelpers } from './hbs/helpers';
+
+import { localStrategy } from './auth/passport';
 
 /**
  * Create an Express app
@@ -79,10 +82,15 @@ app.set('port', parseInt(process.env.PORT, 10) || 3000);
 app.set('views', path.join(__dirname, '../views'));
 app.set('view engine', 'hbs');
 
+app.set('uploadsDir', path.resolve(__dirname, '../static/uploads'));
+
 /**
  * Registering all custom Handlebars helpers
  */
 hbs.registerHelpers(hbsHelpers);
+
+// Setting up passport
+passport.use(localStrategy);
 
 /**
  * Registering global middlewares goes here
@@ -103,6 +111,9 @@ app.use(session({
     }),
     name: 'boilerplate.sid',
 }));
+
+// Express cookies parser
+app.use(cookieParser());
 
 // Flashing messages
 app.use(flash());

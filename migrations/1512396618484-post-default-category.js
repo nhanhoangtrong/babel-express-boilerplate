@@ -1,8 +1,9 @@
 'use strict';
 
 const mongoose = require('mongoose');
-const { postCategorySchema } = require('../schemas/post');
+const { postCategorySchema, postSchema } = require('../schemas/post');
 
+const Post = mongoose.model('Post', postSchema);
 const PostCategory = mongoose.model('PostCategory', postCategorySchema);
 
 exports.up = function (next) {
@@ -15,5 +16,7 @@ exports.up = function (next) {
 };
 
 exports.down = function (next) {
-    PostCategory.deleteOne({ slug: 'uncategorized' }, next);
+    PostCategory.deleteMany({}, () => {
+        Post.deleteMany({}, next);
+    });
 };
