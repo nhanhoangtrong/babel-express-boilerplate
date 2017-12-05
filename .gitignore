@@ -8,7 +8,7 @@ dist
 static/uploads
 
 # Migrations status
-migrations/.migrate
+.migrate
 
 # Logs
 logs

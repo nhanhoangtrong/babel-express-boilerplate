@@ -1,8 +1,14 @@
 {
     "verbose": true,
-    "exec": "babel-node src/index.js",
+    "exec": "eslint src --fix --cache --quiet && babel-node src/index.js",
     "ext": "js jsx json",
     "watch": [
-        "src"
-    ]
+        "src",
+        "schemas",
+        ".babelrc",
+        "package.json"
+    ],
+    "env": {
+        "NODE_ENV": "development"
+    }
 }

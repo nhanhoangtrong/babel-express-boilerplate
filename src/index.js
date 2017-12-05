@@ -1,20 +1,23 @@
-import app from './app'
-import chalk from 'chalk'
-import http from 'http'
+import './loadenv';
+import app from './app';
+import chalk from 'chalk';
+import http from 'http';
+import logger from './logger';
 
-const port = app.get('port')
+const host = app.get('host');
+const port = app.get('port');
 
-const server = http.createServer(app)
+const server = http.createServer(app);
 
-// app.listen(port, () => {
-//     console.log(chalk.cyan(`Server is running on ${port}`))
-// })
-server.listen(port)
+server.listen(port);
+
 server.on('listening', () => {
-    console.log(chalk.cyan(`HTTP Server is running on ${port}`))
-})
+    logger.info(chalk.cyan(`HTTP Server is running on http://${host}:${port}`));
+});
+
 server.on('error', (err) => {
-    console.error(chalk.red('Error:'), 'Server error')
-    console.error(err)
-    server.close()
-})
+    logger.error(chalk.red('Error:'), 'Server error');
+    logger.error(err);
+    server.close();
+    process.exit(1);
+});

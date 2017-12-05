@@ -1,6 +1,6 @@
 process.env.AUTO_MIGRATE = false;
 
-const mocha = require('mocha');
+require('mocha');
 const chai = require('chai');
 const chaiHTTP = require('chai-http');
 
@@ -28,7 +28,7 @@ describe('These are APIs tests', () => {
             .end((err, res) => {
                 res.should.have.status(200);
                 res.body.should.be.an('array');
-                done()
+                done();
             });
     });
 
@@ -39,7 +39,7 @@ describe('These are APIs tests', () => {
             .end((err, res) => {
                 res.should.have.status(200);
                 res.body.should.be.an('array');
-                done()
+                done();
             });
     });
 });
