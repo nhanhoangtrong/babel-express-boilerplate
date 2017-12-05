@@ -1,62 +1,97 @@
 /* eslint-disable no-console */
 const migrate = require('migrate');
-const { resolve } = require('path');
+const { resolve, join } = require('path');
 const dotenv = require('dotenv');
 const mongoose = require('mongoose');
+const fs = require('fs');
 
 dotenv.config({
     path: resolve(__dirname, '../.env'),
 });
 const params = process.argv.slice(2);
 
-// Start mongoose connection
-mongoose.Promise = global.Promise;
-mongoose.connect(process.env.MONGODB_CONNECT_URI, {
-    useMongoClient: true,
-}).then(function () {
-    // Start loading migrations
-    runMigrate();
-}).catch(function (err) {
-    console.error('Migration running errors.');
-    console.error(err.stack);
-    process.exit(1);
-});
+const stateStore= resolve(__dirname, '../.migrate');
+const migrationsDirectory = resolve(__dirname, '../migrations');
 
-function runMigrate() {
-    migrate.load({
-        stateStore: resolve(__dirname, '../.migrate'),
-        migrationsDirectory: resolve(__dirname, '../migrations'),
-    }, function (err, set) {
-        if (err) {
-            throw err;
-        }
+const defaultContent = `'use strict';
 
-        if (params.length === 0 || params[0] === 'up') {
+exports.up = function (next) {
+    next();
+};
+
+exports.down = function (next) {
+    next();
+};
+`;
+
+if (params[0] === 'create') {
+    try {
+        const name = params.slice(1).join('-');
+        const filename = Date.now().toString() + (name ? '-' + name + '.js' : '.js');
+        console.log('Creating:', filename);
+
+        const file = fs.createWriteStream(join(migrationsDirectory, filename));
+        file.write(defaultContent, () => {
+            file.close();
+            process.exit(0);
+        });
+    } catch (err) {
+        console.error('Creating migration file errors.');
+        console.error(err.stack);
+        process.exit(1);
+    }
+} else if (params[0] === 'up' || params[0] === 'down') {
+    setupMigrate().then(function () {
+        // Start loading migrations
+        return runMigrate(params[0]);
+    }).then(() => {
+        console.log('Migrations ran successfully.');
+        clearMigrate();
+    }).catch(function (err) {
+        console.error('Migration running errors.');
+        console.error(err.stack);
+        process.exit(1);
+    });
+} else {
+    // Show helps
+    throw new Error('Please using "migrate up/down/create"');
+}
+
+function setupMigrate() {
+    // Start mongoose connection
+    mongoose.Promise = global.Promise;
+    return mongoose.connect(process.env.MONGODB_CONNECT_URI, {
+        useMongoClient: true,
+    });
+}
+
+function clearMigrate() {
+    return mongoose.connection.close();
+}
+
+function runMigrate(direction) {
+    return new Promise(function (resolve, reject) {
+        migrate.load({
+            stateStore,
+            migrationsDirectory,
+        }, function (err, set) {
+            if (err) {
+                return reject(err);
+            }
+
+            const migrateFunc = set[direction];
+            if (typeof migrateFunc !== 'function') {
+                return reject(Error('Cannot run this direction'));
+            }
             set.migrations.forEach(function (migration) {
-                console.log('up:', migration.title);
+                console.log(direction + ':', migration.title);
             });
-            set.up(function (err) {
+            migrateFunc.call(set, function (err) {
                 if (err) {
-                    throw err;
+                    return reject(err);
                 }
-                console.log('Migrations up successfully ran');
-                process.exit(0);
+                return resolve();
             });
-        } else if (params[0] === 'down') {
-            set.migrations.forEach(function (migration) {
-                console.log('down:', migration.title);
-            });
-            set.down(function (err) {
-                if (err) {
-                    throw err;
-                }
-                console.log('Migrations down successfully ran');
-                process.exit(0);
-            });
-        } else {
-            // Show directions
-            console.log('Please using with "up" or "down".');
-            process.exit(1);
-        }
+        });
     });
 }
