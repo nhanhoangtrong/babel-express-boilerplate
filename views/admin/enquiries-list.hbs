@@ -27,7 +27,7 @@
                             <td>{{name}}</td>
                             <td>{{email}}</td>
     						<td>{{phone}}</td>
-                            <td>{{millisecondsToDate createdAt}}</td>
+                            <td>{{callFunc createdAt "toLocaleString" "vi-VN"}}</td>
                             <td>{{content}}</td>
                             <td>
                                 <button class="btn btn-default" onclick="openConfirmDialog('{{_id}}', '{{name}}')"><i class="fa fa-trash"></i></button>

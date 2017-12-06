@@ -35,8 +35,8 @@
     						<td>{{filetype}}</td>
                             <td>{{filesize}} {{#if filesize}}bytes{{else}}byte{{/if}}</td>
                             <td><a href="/admin/user/{{author._id}}">{{author.firstName}} {{author.lastName}}</a></td>
-                            <td>{{millisecondsToDate createdAt}}</td>
-                            <td>{{millisecondsToDate updatedAt}}</td>
+                            <td>{{callFunc createdAt "toLocaleString" "vi-VN"}}</td>
+                            <td>{{callFunc createdAt "toLocaleString" "vi-VN"}}</td>
                             <td>
                                 <button class="btn btn-default" onclick="confirmRemoveDialog('{{_id}}', '{{filename}}')"><i class="fa fa-trash"></i></button>
                             </td>

@@ -29,25 +29,11 @@ const localFileSchema = new Schema({
         ref: 'User',
         index: true,
     },
-    createdAt: {
-        type: Number,
-        index: true,
-    },
-    updatedAt: {
-        type: Number,
-        index: true,
-    },
-});
+}, { strict: true, timestamps: true });
 
-/**
- * Auto add createdAt field if document is first-time creating
- */
-localFileSchema.pre('save', function (next) {
-    this.updatedAt = Date.now();
-    if (!this.createdAt) {
-        this.createdAt = this.updatedAt;
-    }
-    next();
+localFileSchema.index({
+    createdAt: -1,
+    updatedAt: -1,
 });
 
 exports.localFileSchema = localFileSchema;

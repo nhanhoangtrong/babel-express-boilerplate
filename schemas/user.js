@@ -25,27 +25,13 @@ const userSchema = new Schema({
         type: Boolean,
         default: false,
     },
-    createdAt: Number,
-    updatedAt: {
-        type: Number,
-        index: true,
-    },
-}, { strict: true });
+}, { strict: true, timestamps: true });
 
-/**
- * Before saving a new user, we need to create and update date-time fields
- */
-userSchema.pre('save', function (next) {
-    // Set the updated field to current time
-    this.updatedAt = Date.now();
-
-    // Check if this saving is creating a new user or updating a new user
-    if (!this.createdAt) {
-        // Set the created field to current time
-        this.createdAt = this.updatedAt;
-    }
-    // Perform next action
-    next();
+userSchema.index({
+    createdAt: -1,
+    updatedAt: -1,
+    email: 1,
+    isAdmin: 1,
 });
 
 /**

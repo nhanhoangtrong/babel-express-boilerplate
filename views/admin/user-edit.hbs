@@ -55,7 +55,7 @@
                               <div class="controls">
                                 <div class="input-prepend input-group">
                                   <span class="add-on input-group-addon"><i class="glyphicon glyphicon-calendar fa fa-calendar"></i></span>
-                                  <input type="text" name="createdAt" id="createdAt" class="form-control" value="{{millisecondsToDate edittedUser.createdAt}}">
+                                  <input type="text" name="createdAt" id="createdAt" class="form-control" value="{{callFunc edittedUser.createdAt "toLocaleString" "en-US"}}">
                                 </div>
                               </div>
                             </div>
@@ -100,7 +100,7 @@ $('#createdAt').daterangepicker({
     singleDatePicker: true,
     timePicker: true,
     locale: {
-        format: 'MM/DD/YYYY h:mm A'
+        format: 'MM/DD/YYYY, hh:mm:ss A'
     }
 });
 </script>

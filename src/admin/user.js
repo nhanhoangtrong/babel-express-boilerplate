@@ -41,7 +41,7 @@ router.use((req, res, next) => {
         title: `Creating a new user`,
         section: 'users',
         edittedUser: {
-            createdAt: Date.now(),
+            createdAt: new Date(),
         },
     });
 }).post('/new', async (req, res, next) => {
@@ -50,13 +50,15 @@ router.use((req, res, next) => {
             throw new Error('Re-type password does not match.');
         }
 
+        req.body.createdAt = new Date(req.body.createdAt);
+
         const user = await User.create({
             firstName: req.body.firstName,
             lastName: req.body.lastName,
             email: req.body.email,
             password: req.body.password,
             isAdmin: req.body.isAdmin,
-            createdAt: new Date(req.body.createdAt).getTime(),
+            createdAt: req.body.createdAt,
         });
         req.flash('success', `User ${user.firstName} has been created successfully.`);
         res.redirect('/admin/user');
@@ -69,7 +71,7 @@ router.use((req, res, next) => {
                 firstName: req.body.firstName,
                 lastName: req.body.lastName,
                 email: req.body.email,
-                createdAt: new Date(req.body.createdAt).getTime(),
+                createdAt: req.body.createdAt,
                 isAdmin: req.body.isAdmin,
             },
         });
@@ -89,13 +91,14 @@ router.use((req, res, next) => {
     }
 }).post('/:userId', async (req, res, next) => {
     try {
-        req.body.createdAt = new Date(req.body.createdAt).getTime();
+        req.body.createdAt = new Date(req.body.createdAt);
         const user = await User.findByIdAndUpdate(req.params.userId, {
             firstName: req.body.firstName,
             lastName: req.body.lastName,
             email: req.body.email,
             password: req.body.password,
             isAdmin: req.body.isAdmin,
+            createdAt: req.body.createdAt,
         }).exec();
 
         req.flash('success', `User "${user.firstName} ${user.lastName}" has been updated successfully.`);

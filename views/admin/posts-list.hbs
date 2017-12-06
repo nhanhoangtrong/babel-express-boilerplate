@@ -34,7 +34,7 @@
     						<td><a href="/admin/user/{{author._id}}">{{author.firstName}} {{author.lastName}}</a></td>
     						<td>
                                 {{#if isPublished}}
-                                {{millisecondsToDate publishedAt}}
+                                 {{callFunc publishedAt "toLocaleString" "vi-VN"}}
                                 {{else}}
                                 None
                                 {{/if}}

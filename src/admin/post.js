@@ -55,7 +55,7 @@ router.use((req, res, next) => {
             post: {
                 author: {},
                 categories: [],
-                publishedAt: Date.now(),
+                publishedAt: new Date(),
             },
             postCategories,
             defaultPostCategory,
@@ -67,7 +67,7 @@ router.use((req, res, next) => {
 
 }).post('/new', async (req, res, next) => {
     try {
-        req.body.publishedAt = new Date(req.body.publishedAt).getTime();
+        req.body.publishedAt = new Date(req.body.publishedAt);
         const post = await Post.create({
             title: req.body.title,
             slug: req.body.slug,
@@ -122,7 +122,12 @@ router.use((req, res, next) => {
 }).post('/:postId', async (req, res, next) => {
     try {
         req.body._id = req.params.postId;
-        req.body.publishedAt = new Date(req.body.publishedAt).getTime();
+        req.body.publishedAt = new Date(req.body.publishedAt);
+
+        // Set publish to false if current time is less than publish time
+        if (req.body.publishedAt.getTime() > Date.now()) {
+            req.body.isPublished = false;
+        }
         const raw = await Post.findByIdAndUpdate(req.params.postId, {
             title: req.body.title,
             slug: req.body.slug,

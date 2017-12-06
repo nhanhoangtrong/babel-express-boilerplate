@@ -11,12 +11,8 @@ const enquirySchema = new Schema({
     },
     phone: String,
     content: String,
-    createdAt: {
-        type: Date,
-        default: Date.now,
-    },
-});
+}, { strict: true, timestamps: true, });
 
-enquirySchema.index({ createdAt: -1 });
+enquirySchema.index({ createdAt: -1, });
 
 exports.enquirySchema = enquirySchema;

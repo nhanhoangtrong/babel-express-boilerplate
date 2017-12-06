@@ -45,12 +45,10 @@ const postSchema = new Schema({
         ref: 'User',
     },
     content: String,
-    createdAt: Number,
-    updatedAt: {
-        type: Number,
-        index: true,
+    publishedAt: {
+        type: Date,
+        default: () => new Date(),
     },
-    publishedAt: Number,
     isPublished: {
         type: Boolean,
         default: false,
@@ -63,23 +61,7 @@ const postSchema = new Schema({
             index: true,
         }
     ],
-}, { strict: true });
-
-/**
- * Before saving a new post, we need to create and update date-time fields
- */
-postSchema.pre('save', function (next) {
-    // Set the updated field to current time
-    this.updatedAt = Date.now();
-
-    // Check if this saving is creating a new user or updating a new user
-    if (!this.createdAt) {
-        // Set the created field to current time
-        this.createdAt = this.updatedAt;
-    }
-    // Perform next action
-    next();
-});
+}, { strict: true, timestamps: true });
 
 postSchema.pre('remove', function (next) {
     if (!this.default) {
@@ -92,7 +74,11 @@ postSchema.pre('remove', function (next) {
 /**
  * Telling post model to indexing the fields
  */
-postSchema.index({ updatedAt: -1, publishedAt: -1 });
+postSchema.index({
+    createdAt: -1,
+    updatedAt: -1,
+    publishedAt: -1,
+});
 
 /**
  * Finally, creating Post model from defined schema and exporting as default

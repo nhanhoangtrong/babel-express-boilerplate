@@ -86,7 +86,7 @@ function seedingPosts(authors, postCategories) {
             description: faker.lorem.paragraph(),
             author: faker.helpers.randomize(authors)._id,
             content: faker.lorem.paragraphs(faker.random.number(20)).replace('\n', '<br/>'),
-            publishedAt: Date.now(),
+            publishedAt: new Date(),
             isPublished: true,
             categories,
         });

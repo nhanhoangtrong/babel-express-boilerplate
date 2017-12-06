@@ -35,7 +35,7 @@
                                   <input type="checkbox" class="js-switch" {{#if isAdmin}}checked{{/if}} data-disabled="true" hidden>
                                 </label>
                             </td>
-    						<td>{{millisecondsToDate createdAt}}</td>
+    						<td>{{callFunc createdAt "toLocaleString" "vi-VN"}}</td>
                             <td>
                                 <a href="/admin/user/{{_id}}" class="btn btn-default"><i class="fa fa-gear"></i></a>
                                 <button class="btn btn-default" onclick="confirmRemoveDialog('{{_id}}', '{{firstName}}', '{{lastName}}')"><i class="fa fa-trash"></i></button>

@@ -2,6 +2,13 @@ import hbs from 'express-hbs';
 import _ from 'lodash';
 
 export const hbsHelpers = {
+    callFunc(object, funcName, ...args) {
+        const options = args.splice(args.length - 1)[0];
+        if (Object.prototype.hasOwnProperty(funcName) && typeof object[funcName] === 'function') {
+            return object[funcName].call(object, ...args);
+        }
+        throw new Error("Object doesn't has the given function.");
+    },
     millisecondsToDate(milliseconds, options) {
         const date = new Date(milliseconds || 0);
         return date.toLocaleString();
