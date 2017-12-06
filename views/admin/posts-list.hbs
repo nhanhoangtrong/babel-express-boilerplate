@@ -54,31 +54,37 @@
                         {{/each}}
     				</tbody>
     			</table>
-                <div id="removeConfirmDialog" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
-                    <div class="modal-dialog modal-md">
-                      <div class="modal-content">
-                        <div class="modal-header">
-                          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span>
-                          </button>
-                          <h4 class="modal-title">Do you want to remove this post?</h4>
-                        </div>
-                        <div class="modal-body">
-                          <h4>Ops! You try to remove post <strong id="removingPostTitle"></strong>!</h4>
-                          <p>Click Delete to remove it now or Cancel to go back.</p>
-                          <input id="removingPostId" hidden style="display: none;">
-                        </div>
-                        <div class="modal-footer">
-                          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                          <button type="button" class="btn btn-danger" onclick="removePost()">Delete</button>
-                        </div>
 
-                      </div>
-                    </div>
-                </div>
+                {{> admin/pagination }}
     		</div>
     	</div>
     </div>
 </div>
+
+<div id="removeConfirmDialog" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-md">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+                <h4 class="modal-title">Do you want to remove this post?</h4>
+            </div>
+            <div class="modal-body">
+                <h4>Ops! You try to remove post
+                    <strong id="removingPostTitle"></strong>!</h4>
+                <p>Click Delete to remove it now or Cancel to go back.</p>
+                <input id="removingPostId" hidden style="display: none;">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-danger" onclick="removePost()">Delete</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
 {{#contentFor "pageScripts"}}
 <script src="/static/admin/js/switchery.min.js"></script>
 <script>

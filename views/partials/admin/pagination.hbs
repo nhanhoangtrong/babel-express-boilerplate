@@ -1,0 +1,25 @@
+<ul class="pagination pull-right">
+    {{#ifeq currentPage 1}}
+        <li class="previous disabled">
+            <a href="javascript:">Previous</a>
+        </li>
+        {{else}}
+            <li class="previous">
+                <a href="?page={{desc currentPage}}&per={{perPage}}">Previous</a>
+            </li>
+    {{/ifeq}}
+    {{#range totalPages}}
+        <li {{#ifeq @element currentPage}} class="active" {{/ifeq}}>
+            <a href="?page={{@element}}&per={{perPage}}">{{@element}}</a>
+        </li>
+    {{/range}}
+    {{#ifeq currentPage totalPages}}
+        <li class="next disabled">
+            <a href="javascript:">Next</a>
+        </li>
+        {{else}}
+            <li class="next">
+                <a href="?page={{inc currentPage}}&per={{perPage}}">Next</a>
+            </li>
+    {{/ifeq}}
+</ul>

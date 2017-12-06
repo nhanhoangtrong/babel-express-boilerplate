@@ -16,8 +16,14 @@ router.use((req, res, next) => {
     res.locals.section = 'post';
     next();
 }).get('/', async (req, res, next) => {
-    const page = parseInt(req.query.page, 10) || 1;
-    const perPage = parseInt(req.query.per, 10) || 20;
+    let page = parseInt(req.query.page, 10);
+    if (isNaN(page) || page < 1) {
+        page = 1;
+    }
+    let perPage = parseInt(req.query.per, 10);
+    if (isNaN(perPage) || perPage < 1) {
+        perPage = 20;
+    }
     try {
         const posts = await Post.find({})
             .skip((page - 1) * perPage)
@@ -27,11 +33,12 @@ router.use((req, res, next) => {
             .exec();
         const total = await Post.find({}).count().exec();
 
-        res.render('admin/post-list', {
+        res.render('admin/posts-list', {
             title: 'All posts',
             posts: posts,
             totalPages: Math.ceil(total / perPage),
             currentPage: page,
+            perPage,
         });
     } catch (err) {
         next(err);

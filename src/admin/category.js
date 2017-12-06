@@ -12,19 +12,26 @@ router.use((req, res, next) => {
     next();
 })
 .get('/', async (req, res, next) => {
-    const page = parseInt(req.query.page, 10) || 1;
-    const perPage = parseInt(req.query.per, 10) || 20;
+    let page = parseInt(req.query.page, 10);
+    if (isNaN(page) || page < 1) {
+        page = 1;
+    }
+    let perPage = parseInt(req.query.per, 10);
+    if (isNaN(perPage) || perPage < 1) {
+        perPage = 10;
+    }
 
     try {
         const total = await PostCategory.count().exec();
         const totalPages = Math.ceil(total / perPage);
         const postCategories = await PostCategory.find({}).skip((page - 1) * perPage).limit(perPage).exec();
 
-        return res.render('admin/category-list', {
+        return res.render('admin/categories-list', {
             title: `All Post Categories`,
             postCategories,
             currentPage: page,
             totalPages,
+            perPage,
         });
     } catch (err) {
         return next(err);

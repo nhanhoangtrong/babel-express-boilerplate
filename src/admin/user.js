@@ -11,20 +11,27 @@ router.use((req, res, next) => {
     res.locals.section = 'users';
     next();
 }).get('/', async (req, res, next) => {
+    let page = parseInt(req.query.page, 10);
+    if (isNaN(page) || page < 1) {
+        page = 1;
+    }
+    let perPage = parseInt(req.query.per, 10);
+    if (isNaN(perPage) || perPage < 1) {
+        perPage = 20;
+    }
     try {
-        const page = parseInt(req.query.page, 10) || 1;
-        const perPage = parseInt(req.query.per, 10) || 20;
         const users = await User.find({})
             .skip((page - 1) * perPage)
             .limit(perPage)
             .exec();
         const total = await User.find({}).count().exec();
 
-        res.render('admin/user-list', {
+        res.render('admin/users-list', {
             title: 'All Users',
             users: users,
             totalPages: Math.ceil(total / perPage),
             currentPage: page,
+            perPage,
         });
     } catch (err) {
         next(err);

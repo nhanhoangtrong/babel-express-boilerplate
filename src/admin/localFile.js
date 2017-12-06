@@ -12,8 +12,14 @@ router.use((req, res, next) => {
     return next();
 })
 .get('/', async (req, res, next) => {
-    const page = parseInt(req.query.page, 10) || 1;
-    const perPage = parseInt(req.query.per, 10) || 20;
+    let page = parseInt(req.query.page, 10);
+    if (isNaN(page) || page < 1) {
+        page = 1;
+    }
+    let perPage = parseInt(req.query.per, 10);
+    if (isNaN(perPage) || perPage < 1) {
+        perPage = 20;
+    }
     try {
         const localFiles = await LocalFile.find({})
             .skip((page - 1) * perPage)
@@ -27,6 +33,7 @@ router.use((req, res, next) => {
             localFiles,
             totalPages: Math.ceil(total / perPage),
             currentPage: page,
+            perPage,
         });
     } catch (err) {
         next(err);
