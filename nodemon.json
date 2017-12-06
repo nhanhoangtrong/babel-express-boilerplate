@@ -1,6 +1,6 @@
 {
     "verbose": true,
-    "exec": "eslint . --fix --cache --quiet && babel-node src/index.js",
+    "exec": "eslint . --cache --quiet && babel-node src/index.js",
     "ext": "js jsx json",
     "watch": [
         "src",
