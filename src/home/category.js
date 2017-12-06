@@ -3,32 +3,46 @@ import { Post, PostCategory} from '../models';
 
 const router = Router();
 
-router.get('/:catSlug', (req, res, next) => {
-    const page = req.query.page || 0;
-    const perPage = req.query.per || 5;
-    let postCategory;
-    PostCategory.findOne({slug: req.params.catSlug}).exec()
-    .then((cat) => {
-        if (cat) {
-            postCategory = cat;
-            return Post.find({categories: cat._id})
-                .populate('categories')
-                .populate('author')
-                .skip(page * perPage)
-                .limit(perPage)
-                .exec()
-                .then((posts) => {
-                    res.render('home/category', {
-                        title: postCategory.name,
-                        postCategory,
-                        posts,
-                    });
-                });
+router
+.get('/', async (req, res, next) => {
+    try {
+        const postCategories = await PostCategory.find({}).exec();
+        res.render('home/categories-list', {
+            postCategories,
+        });
+    } catch (err) {
+        next(err);
+    }
+})
+.get('/:catSlug', async (req, res, next) => {
+    try {
+        const page = req.query.page || 1;
+        const perPage = req.query.per || 5;
+        const postCategory = await PostCategory.findOne({ slug: req.params.catSlug }).exec();
+
+        if (!postCategory) {
+            // TODO: render 'category' not found page
+            return next();
         }
-        // TODO: render 'category' not found page
-        return next();
-    })
-    .catch(next);
+
+        const posts = await Post.find({
+            categories: postCategory._id,
+            isPublished: true,
+        }).populate('categories')
+            .populate('author')
+            .skip((page - 1) * perPage)
+            .limit(perPage)
+            .exec();
+
+        return res.render('home/category', {
+            title: postCategory.name,
+            postCategory,
+            posts,
+        });
+
+    } catch (err) {
+        return next(err);
+    }
 });
 
 export default router;

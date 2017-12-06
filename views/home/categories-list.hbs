@@ -1,0 +1,25 @@
+{{!< base }}
+
+<div class="inner">
+    <header>
+        <h1>All post categories</h1>
+        <h2>There
+            {{#ifeq postCategories.length 0}}is 1 category{{else}}are {{postCategories.length}} categories{{/ifeq}}.</h2>
+    </header>
+
+    <section class="tiles">
+        {{#each postCategories}}
+        <article class="style2">
+            <span class="image">
+                <img src="/static/home/images/pic02.jpg" alt="{{name}}" />
+            </span>
+            <a href="/category/{{slug}}">
+                <h2>{{name}}</h2>
+                <div class="content">
+                    <p>{{characterLimit description 150}}</p>
+                </div>
+            </a>
+        </article>
+        {{/each}}
+    </section>
+</div>

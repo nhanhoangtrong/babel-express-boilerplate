@@ -3,22 +3,24 @@ import { Post } from '../models';
 
 const router = Router();
 
-router.get('/:postSlug', (req, res, next) => {
-    Post.findOne({slug: req.params.postSlug})
-    .populate('categories')
-    .populate('author')
-    .exec()
-    .then((post) => {
+router.get('/:postSlug', async (req, res, next) => {
+    try {
+        const post = await Post.findOne({slug: req.params.postSlug, isPublished: true})
+            .populate('categories')
+            .populate('author')
+            .exec();
         if (post) {
             return res.render('home/post', {
                 title: post.title,
                 post,
             });
         }
+
         // TODO: Render 'post not found' page
         return next();
-    })
-    .catch(next);
+    } catch (err) {
+        return next(err);
+    }
 });
 
 export default router;

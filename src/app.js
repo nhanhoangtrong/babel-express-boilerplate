@@ -151,58 +151,68 @@ app.use('/static', express.static(path.resolve(__dirname, '../static')));
 /**
  * Registering routes goes here
  */
-app.use('/', homeRoute);
 app.use('/admin', adminRoute);
 app.use('/ajax', ajaxRoute);
 app.use('/api', apiRoute);
+app.use('/', homeRoute);
 
 
 /**
  * Handling errors
  */
-// Handling 404 not found
+// Handling 404 - Not Found
 app.use((req, res, next) => {
-    // AJAX requests
-    if (req.xhr) {
+    // Send Not Found response to AJAX requests
+    if (req.xhr || req.is('application/json')) {
         return res.status(404).send({
-            message: 'Route not found',
+            name: 'Error 404',
+            message: 'Route Not Found.',
         });
     }
-    // Other requests
-    return res.status(404).render('home/error', {
-        title: 'Error 404',
-        message: 'Page not found',
-    });
+    // Send Not Found status
+    return res.status(404).send('Error 404: Page Not Found.');
 });
 if (process.env.NODE_ENV === 'development') {
     // only use errorhandler in development
     app.use((err, req, res, next) => {
-        logger.info('errorhandler');
+        logger.error('errorhandler');
         errorhandler()(err, req, res, next);
     });
 } else {
-    // logging handler
+    /**
+     * Production error handlers middlewares
+     */
+    // print error stack to logger
+    // then delete the stack
     app.use((err, req, res, next) => {
-        logger.error(err);
+        logger.error(err.stack);
+        delete err.stack;
         return next(err);
     });
 
-    // client error handler (AJAX)
+    // Set statusCode default to 500 - Internal Server Error
     app.use((err, req, res, next) => {
-        if (req.xhr) {
-            return res.status(500).send({
-                error: err,
-            });
+        if (res.statusCode < 400) {
+            // respect err.statusCode
+            res.statusCode = err.statusCode || 500;
         }
-        return next(err);
+        next(err);
     });
 
-    // server error handler
+    // Server default error handler
     app.use((err, req, res, next) => {
         if (res.headersSent) {
             return next(err);
         }
-        return res.status(500).send();
+
+        // Send a JSON error response to AJAX requests
+        if (req.xhr || req.is('application/json')) {
+            return res.send({
+                name: err.message,
+                message: err.message,
+            });
+        }
+        return res.send(`${err.name}: ${err.message}`);
     });
 }
 

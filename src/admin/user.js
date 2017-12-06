@@ -10,12 +10,12 @@ const router = Router();
 router.use((req, res, next) => {
     res.locals.section = 'users';
     next();
-}).get('/all', async (req, res, next) => {
+}).get('/', async (req, res, next) => {
     try {
-        const page = parseInt(req.query.page, 10) || 0;
+        const page = parseInt(req.query.page, 10) || 1;
         const perPage = parseInt(req.query.per, 10) || 20;
         const users = await User.find({})
-            .skip(page * perPage)
+            .skip((page - 1) * perPage)
             .limit(perPage)
             .exec();
         const total = await User.find({}).count().exec();
@@ -23,7 +23,8 @@ router.use((req, res, next) => {
         res.render('admin/user-list', {
             title: 'All Users',
             users: users,
-            nPages: Math.ceil(total / perPage),
+            totalPages: Math.ceil(total / perPage),
+            currentPage: page,
         });
     } catch (err) {
         next(err);
@@ -50,13 +51,12 @@ router.use((req, res, next) => {
             isAdmin: req.body.isAdmin,
             createdAt: new Date(req.body.createdAt).getTime(),
         });
-        req.flash('success', `User ${user.firstName} has been created successfully`);
-        res.redirect('/admin/user/all');
+        req.flash('success', `User ${user.firstName} has been created successfully.`);
+        res.redirect('/admin/user');
     } catch (err) {
-        logger.error(JSON.stringify(err, null, 2));
         req.flash('error', err.message);
         // TODO: pass error value into render file
-        res.render('admin/user-edit', {
+        res.status(500).render('admin/user-edit', {
             title: `Creating a new user`,
             edittedUser: {
                 firstName: req.body.firstName,
@@ -66,40 +66,44 @@ router.use((req, res, next) => {
                 isAdmin: req.body.isAdmin,
             },
         });
+        next(err);
     }
-}).post('/remove', async (req, res, next) => {
+})
+// AJAX remove route
+.post('/remove', async (req, res, next) => {
     try {
         const userId = req.body._id;
-
         const removedUser = await User.findByIdAndRemove(userId).exec();
         const raw = await Post.deleteMany({ author: userId }).exec();
         if (removedUser) {
             res.json({
                 status: 'ok',
                 code: 200,
-                message: `User '${removedUser.firstName} ${removedUser.lastName}' has been removed successfully!`,
+                message: `User '${removedUser.firstName} ${removedUser.lastName}' has been removed successfully.`,
             });
         } else {
-            res.json({
+            res.status(400).json({
                 status: 'error',
                 code: 400,
-                message: 'User was not found!',
+                name: 'Bad Request',
+                message: 'User was not found.',
             });
         }
     } catch (err) {
-        logger.error(JSON.stringify(err, null, 2));
-        res.json({
+        res.status(500).json({
             status: 'error',
             code: 500,
+            name: err.name,
             message: err.message,
         });
+        next(err);
     }
 }).get('/:userId', async (req, res, next) => {
     try {
         const user = await User.findById(req.params.userId).exec();
         if (user) {
             return res.render('admin/user-edit', {
-                title: `Editing user ${user.firstName} ${user.lastName}`,
+                title: `Editing user "${user.firstName} ${user.lastName}"`,
                 edittedUser: user,
             });
         }
@@ -118,13 +122,12 @@ router.use((req, res, next) => {
             isAdmin: req.body.isAdmin,
         }).exec();
 
-        req.flash('success', `User ${user.firstName} ${user.lastName} has been updated successfully`);
-        res.redirect('/admin/user/all');
+        req.flash('success', `User "${user.firstName} ${user.lastName}" has been updated successfully.`);
+        res.redirect('/admin/user');
     } catch (err) {
-        logger.error(JSON.stringify(err, null, 2));
         req.flash('error', err.message);
         // TODO: pass error value into render file
-        res.render('admin/user-edit', {
+        res.status(500).render('admin/user-edit', {
             title: `Editing user ${req.body.firstName} ${req.body.lastName}`,
             edittedUser: {
                 _id: req.params.userId,
@@ -135,6 +138,7 @@ router.use((req, res, next) => {
                 isAdmin: req.body.isAdmin,
             },
         });
+        next(err);
     }
 });
 
