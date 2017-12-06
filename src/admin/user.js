@@ -63,7 +63,7 @@ router.use((req, res, next) => {
     } catch (err) {
         req.flash('error', err.message);
         // TODO: pass error value into render file
-        res.status(500).render('admin/user-edit', {
+        res.status(err.statusCode || 500).render('admin/user-edit', {
             title: `Creating a new user`,
             edittedUser: {
                 firstName: req.body.firstName,
@@ -73,37 +73,6 @@ router.use((req, res, next) => {
                 isAdmin: req.body.isAdmin,
             },
         });
-        next(err);
-    }
-})
-// AJAX remove route
-.post('/remove', async (req, res, next) => {
-    try {
-        const userId = req.body._id;
-        const removedUser = await User.findByIdAndRemove(userId).exec();
-        const raw = await Post.deleteMany({ author: userId }).exec();
-        if (removedUser) {
-            res.json({
-                status: 'ok',
-                code: 200,
-                message: `User '${removedUser.firstName} ${removedUser.lastName}' has been removed successfully.`,
-            });
-        } else {
-            res.status(400).json({
-                status: 'error',
-                code: 400,
-                name: 'Bad Request',
-                message: 'User was not found.',
-            });
-        }
-    } catch (err) {
-        res.status(500).json({
-            status: 'error',
-            code: 500,
-            name: err.name,
-            message: err.message,
-        });
-        next(err);
     }
 }).get('/:userId', async (req, res, next) => {
     try {
@@ -134,7 +103,7 @@ router.use((req, res, next) => {
     } catch (err) {
         req.flash('error', err.message);
         // TODO: pass error value into render file
-        res.status(500).render('admin/user-edit', {
+        res.status(err.statusCode || 500).render('admin/user-edit', {
             title: `Editing user ${req.body.firstName} ${req.body.lastName}`,
             edittedUser: {
                 _id: req.params.userId,
@@ -145,7 +114,6 @@ router.use((req, res, next) => {
                 isAdmin: req.body.isAdmin,
             },
         });
-        next(err);
     }
 });
 

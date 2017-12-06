@@ -76,7 +76,7 @@
 						<label class="control-label col-md-3 col-sm-3 col-xs-12" for="categories">Categories<span class="required">*</span>
 						</label>
 						<div class="col-md-6 col-sm-6 col-xs-12">
-							<select id="categories" name="categories[]" class="select2_multiple form-control" multiple="multiple" value="{{post.categories}}">
+							<select id="categories" name="categories[]" class="select2_multiple form-control" multiple="multiple">
 								{{#each postCategories}}
 								<option value="{{_id}}">{{name}}</option>
 								{{/each}}
@@ -198,7 +198,7 @@
 {{#contentFor "inlineScripts"}}
 <script>
 {{#ifeq post.categories.length  0}}
-var selectedCategories = [];
+var selectedCategories = ['{{defaultPostCategory._id}}'];
 {{else}}
 var selectedCategories = [
 	{{#each post.categories as |catId|}}

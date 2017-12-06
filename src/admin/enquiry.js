@@ -30,34 +30,6 @@ router.use((req, res, next) => {
     } catch(err) {
         next(err);
     }
-})
-// AJAX remove route
-.post('/remove', async (req, res, next) => {
-    const id = req.body._id || req.query._id;
-    try {
-        const enquiry = await Enquiry.findByIdAndRemove(id).exec();
-        if (enquiry) {
-            return res.json({
-                status: 'ok',
-                code: 200,
-                message: 'Enquiry has been removed successfully.',
-            });
-        }
-        return res.status(400).json({
-            status: 'error',
-            code: 400,
-            name: 'Bad Request',
-            message: 'Enquiry was not found.',
-        });
-    } catch (err) {
-        res.status(500).json({
-            status: 'error',
-            code: 500,
-            name: err.name,
-            message: err.message,
-        });
-        return next(err);
-    }
 });
 
 export default router;

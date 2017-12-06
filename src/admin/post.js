@@ -45,10 +45,11 @@ router.use((req, res, next) => {
     }
 }).get('/new', async (req, res, next) => {
     try {
-        const [users, postCategories] = Promise.all([
+        const [users, postCategories] = await Promise.all([
             User.find({}).exec(),
             PostCategory.find({}).exec(),
         ]);
+        const defaultPostCategory = postCategories.filter(c => c.default)[0];
         res.render('admin/post-edit', {
             title: `Create a new post`,
             post: {
@@ -57,6 +58,7 @@ router.use((req, res, next) => {
                 publishedAt: Date.now(),
             },
             postCategories,
+            defaultPostCategory,
             users,
         });
     } catch (err) {
@@ -83,7 +85,7 @@ router.use((req, res, next) => {
     } catch (err) {
         req.flash('error', err.message);
         // TODO: pass error value into render file
-        res.status(500).render('admin/post-edit', {
+        res.status(err.statusCode || 500).render('admin/post-edit', {
             title: `Create a new post`,
             post: {
                 title: req.body.title,
@@ -97,34 +99,6 @@ router.use((req, res, next) => {
                 categories: req.body.categories,
             },
         });
-        return next(err);
-    }
-})
-// AJAX remove route
-.post('/remove', async (req, res, next) => {
-    try {
-        const removedPost = await Post.findByIdAndRemove(req.body._id).exec();
-        if (removedPost) {
-            return res.json({
-                status: 'ok',
-                code: 200,
-                message: `Post ${removedPost.title} has been removed successfully.`,
-            });
-        }
-        return res.json({
-            status: 'error',
-            code: 400,
-            name: 'Bad Request',
-            message: 'Post could not found.',
-        });
-    } catch (err) {
-        res.status(500).json({
-            status: 'error',
-            code: 500,
-            name: err.name,
-            message: err.message,
-        });
-        return next(err);
     }
 }).get('/:postId', async (req, res, next) => {
     try {
@@ -169,7 +143,7 @@ router.use((req, res, next) => {
     } catch (err) {
         req.flash('error', err.message);
         // TODO: pass error value into render file
-        res.status(500).render('admin/post-edit', {
+        res.status(err.statusCode || 500).render('admin/post-edit', {
             title: `Edit post "${req.body.title}"`,
             post: {
                 _id: req.body.postId,
@@ -184,7 +158,6 @@ router.use((req, res, next) => {
                 categories: req.body.categories,
             },
         });
-        next(err);
     }
 });
 

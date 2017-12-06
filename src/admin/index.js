@@ -9,6 +9,7 @@ import userRoute from './user';
 import uploadRoute from './upload';
 import localFileRoute from './localFile';
 import enquiryRoute from './enquiry';
+import ajaxRoute from './ajax';
 
 const router = Router();
 /**
@@ -71,6 +72,7 @@ router.use((req, res, next) => {
 .use('/category', categoryRoute)
 .use('/user', userRoute)
 .use('/local-file', localFileRoute)
+.use('/ajax', ajaxRoute)
 /**
  * Enquiry section
  */
@@ -99,6 +101,9 @@ router.use((req, res, next) => {
 // Render admin error page and
 // send error to app-level error handler
 .use((err, req, res, next) => {
+    if (res.headersSent) {
+        return next(err);
+    }
     if (res.statusCode < 400) {
         res.statusCode = err.statusCode || 500;
     }
@@ -106,7 +111,7 @@ router.use((req, res, next) => {
         name: err.name,
         message: err.message,
     });
-    next(err);
+    return next(err);
 });
 
 export default router;

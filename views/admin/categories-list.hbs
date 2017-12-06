@@ -45,9 +45,9 @@
           <h4 class="modal-title">Do you want to remove this category?</h4>
         </div>
         <div class="modal-body">
-          <h4>Ops! You try to remove category <strong id="removingCatName"></strong>!</h4>
+          <h4>Ops! You try to remove category <strong id="removingObjectTitle"></strong>!</h4>
           <p>Click Delete to remove it now or Cancel to go back.</p>
-          <input id="removingCatId" class="hidden">
+          <input id="removingObjectId" class="hidden">
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -164,19 +164,19 @@ function openConfimRemoveDialog(btn) {
     var tableData = $(btn).parent().parent();
     var catId = tableData.data('id');
     var catName = tableData.data('name');
-    $('#removingCatId').val(catId);
-    $('#removingCatName').html(catName);
+    $('#removingObjectId').val(catId);
+    $('#removingObjectTitle').html(catName);
     $('#removeConfirmDialog').modal();
 }
 function removeCat() {
-    var catId = $('#removingCatId').val();
+    var catId = $('#removingObjectId').val();
     if (catId) {
         var data = {
-            _id: catId,
+            objectId: catId,
             _csrf: csrfToken,
         };
         $.ajax({
-            url: '/admin/category/remove',
+            url: '/admin/ajax/category/remove',
             type: 'POST',
             data: data,
             processData: true,

@@ -57,7 +57,7 @@ router.use((req, res, next) => {
     } catch (err) {
         req.flash('error', err.message);
         // TODO: pass error value into render file
-        res.render('admin/category-edit', {
+        res.status(err.statusCode || 500).render('admin/category-edit', {
             title: 'Create a new Post Category',
             postCategory: {
                 name: req.body.name,
@@ -65,46 +65,6 @@ router.use((req, res, next) => {
                 description: req.body.description,
             },
         });
-
-        next(err);
-    }
-})
-// AJAX remove route
-.post('/remove', async (req, res, next) => {
-    try {
-        const removedCategory = await PostCategory.findOneAndRemove({
-            _id: req.body._id,
-            default: false,
-        }).exec();
-
-        if (removedCategory) {
-            // Remove this PostCategory from posts
-            const raw = await Post.updateMany({}, {
-                $pull: {
-                    categories: req.body._id,
-                }
-            }).exec();
-
-            return res.json({
-                status: 'ok',
-                code: 200,
-                message: `Category '${removedCategory.name}' has been removed successfully.`,
-            });
-        }
-        return res.status(400).json({
-            status: 'error',
-            code: 400,
-            name: 'Bad Request',
-            message: 'Category not found or cannot be removed.',
-        });
-    } catch (err) {
-        res.status(500).json({
-            status: 'error',
-            code: 500,
-            name: err.name,
-            message: err.message,
-        });
-        return next(err);
     }
 })
 // AJAX edit route
@@ -128,16 +88,15 @@ router.use((req, res, next) => {
                 },
             });
         }
-        return res.status(400).json({
-            status: 'error',
-            code: 400,
-            name: 'Bad Request',
-            message: 'Category was not found.',
-        });
+        const err = new Error('Local File was not found');
+        err.statusCode = 400;
+        err.name = 'BadRequest';
+        throw err;
+
     } catch (err) {
-        res.status(500).json({
+        res.status(err.statusCode || 500).json({
             status: 'error',
-            code: 500,
+            code: err.statusCode || 500,
             name: err.name,
             message: err.message,
         });
@@ -172,7 +131,7 @@ router.use((req, res, next) => {
     } catch (err) {
         req.flash('error', err.message);
         // TODO: pass error value into render file
-        res.render('admin/category-edit', {
+        res.status(err.statusCode || 500).render('admin/category-edit', {
             title: `Edit "${req.body.name}" category`,
             postCategory: {
                 name: req.body.name,
@@ -180,7 +139,6 @@ router.use((req, res, next) => {
                 description: req.body.description,
             },
         });
-        next(err);
     }
 });
 

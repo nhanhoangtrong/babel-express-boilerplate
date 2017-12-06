@@ -62,9 +62,9 @@
             </div>
             <div class="modal-body">
                 <h4>Ops! You try to remove user
-                    <strong id="removingUserName"></strong>!</h4>
+                    <strong id="removingObjectTitle"></strong>!</h4>
                 <p>Click Delete to remove it now or Cancel to go back.</p>
-                <input id="removingUserId" hidden style="display: none;">
+                <input id="removingObjectId" hidden style="display: none;">
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -79,19 +79,19 @@
 <script>
 var csrfToken = $('#_csrf').val();
 function confirmRemoveDialog(userId, firstName, lastName) {
-    $('#removingUserId').val(userId);
-    $('#removingUserName').html(firstName + ' ' + lastName);
+    $('#removingObjectId').val(userId);
+    $('#removingObjectTitle').html(firstName + ' ' + lastName);
     $('#removeConfirmDialog').modal();
 }
 function removeUser() {
-    var userId = $('#removingUserId').val();
+    var userId = $('#removingObjectId').val();
     if (userId) {
         var data = {
-            _id: userId,
+            objectId: userId,
             _csrf: csrfToken,
         };
         $.ajax({
-            url: '/admin/user/remove',
+            url: '/admin/ajax/user/remove',
             type: 'POST',
             data: data,
             processData: true,

@@ -52,9 +52,9 @@
             </div>
 
             <div class="modal-body">
-                <h4>Ops! You are trying to remove an enquiry from <strong id="removingEnquiryFrom"></strong>!</h4>
+                <h4>Ops! You are trying to remove an enquiry from <strong id="removingObjectTitle"></strong>!</h4>
                 <p>Click Delete to remove it now or Cancel to go back.</p>
-                <input id="removingEnquiryId" type="text" name="removingEnquiryId" class="hidden">
+                <input id="removingObjectId" type="text" name="removingObjectId" class="hidden">
             </div>
 
             <div class="modal-footer">
@@ -67,14 +67,14 @@
 {{#contentFor "pageScripts"}}
 <script>
     function removeEnquiry() {
-        var id = $('#removingEnquiryId').val();
+        var id = $('#removingObjectId').val();
         if (id) {
             var data = {
-                _id: id,
+                objectId: id,
                 _csrf: $('#_csrf').val(),
             };
             $.ajax({
-                url: '/admin/enquiry/remove',
+                url: '/admin/ajax/enquiry/remove',
                 type: 'POST',
                 data: data,
                 success: function(res) {
@@ -109,8 +109,8 @@
         }
     }
     function openConfirmDialog(id, from) {
-        $('#removingEnquiryId').val(id);
-        $('#removingEnquiryFrom').html(from);
+        $('#removingObjectId').val(id);
+        $('#removingObjectTitle').html(from);
         $('#removeConfirmDialog').modal();
     }
 </script>
