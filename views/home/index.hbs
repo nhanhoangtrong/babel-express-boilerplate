@@ -20,6 +20,7 @@
         </article>
         {{/each}}
     </section>
+     {{> home/pagination currentPage=currentPage totalPages=totalPages path="/"}}
 </div>
 {{#contentFor "pageScripts"}}
 <script>

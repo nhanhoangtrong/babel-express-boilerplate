@@ -21,12 +21,12 @@ export const hbsHelpers = {
         }
     },
     inc(value) {
-        const val = parseInt(value, 10) + 1;
-        return val ? val : 'NaN';
+        const val = parseInt(value, 10);
+        return isNaN(val) ? 'NaN' : val + 1;
     },
     desc(value) {
         const val = parseInt(value, 10);
-        return val ? val : 'NaN';
+        return isNaN(val) ? 'NaN' : val - 1;
     },
     ifeq(valueOne, valueTwo, options) {
         return valueOne === valueTwo ? options.fn(this) : options.inverse(this);

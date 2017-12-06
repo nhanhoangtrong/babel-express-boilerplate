@@ -15,8 +15,17 @@ router.use((req, res, next) => {
 })
 .get('/', async (req, res, next) => {
     try {
-        const page = parseInt(req.query.page, 10) || 1;
-        const perPage = parseInt(req.query.per, 10) || 9;
+        let page = parseInt(req.query.page, 10);
+        if (isNaN(page) || page < 1) {
+            page = 1;
+        }
+        let perPage = parseInt(req.query.per, 10);
+        if (isNaN(perPage) || perPage < 1) {
+            perPage = 9;
+        }
+        const total = await Post.find({
+            isPublished: true,
+        }).count().exec();
         const posts = await Post
             .find({ isPublished: true })
             .populate('categories')
@@ -29,6 +38,8 @@ router.use((req, res, next) => {
         res.render('home/index', {
             title: 'Homepage',
             posts,
+            currentPage: page,
+            totalPages: Math.ceil(total / perPage),
         });
     } catch (err) {
         next(err);
@@ -62,8 +73,14 @@ router.use((req, res, next) => {
 })
 .get('/posts', async (req, res, next) => {
     try {
-        const page = parseInt(req.query.page, 10) || 1;
-        const perPage = parseInt(req.query.per, 10) || 9;
+        let page = parseInt(req.query.page, 10);
+        if (isNaN(page) || page < 1) {
+            page = 1;
+        }
+        let perPage = parseInt(req.query.per, 10);
+        if (isNaN(perPage) || perPage < 1) {
+            perPage = 9;
+        }
         const posts = await Post
             .find({ isPublished: true })
             .populate('categories')

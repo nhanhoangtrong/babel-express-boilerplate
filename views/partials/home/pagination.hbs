@@ -1,0 +1,18 @@
+<section style="margin: 1em auto;">
+    <div class="row">
+        <div class="6u 12u$(small)" style="text-align: left;">
+            {{#ifeq currentPage 1}}
+                <span class="button disabled">Previous</span>
+            {{else}}
+                <a href="{{path}}?page={{desc currentPage}}" class="button">Previous</a>
+            {{/ifeq}}
+        </div>
+        <div class="6u 12u$(small)" style="text-align: right;">
+            {{#ifeq currentPage totalPages}}
+                <span class="button disabled">Next</span>
+                {{else}}
+                    <a href="{{path}}?page={{inc currentPage}}" class="button">Next</a>
+            {{/ifeq}}
+        </div>
+    </div>
+</section>

@@ -7,9 +7,10 @@
     </header>
 
     <section class="box">
-        <h2>There are {{posts.length}} posts in this category.</h2>
+        <h2>There {{#ifeq totalPages 1}}is 1 page{{else}}are {{totalPages}} pages{{/ifeq}} in this category.</h2>
         {{#each posts}}
             {{> home/post-simple }}
         {{/each}}
     </section>
+    {{> home/pagination currentPage=currentPage totalPages=totalPages path=paginationPath}}
 </div>
