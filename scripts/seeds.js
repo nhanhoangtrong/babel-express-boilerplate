@@ -19,6 +19,7 @@ mongoose.connect(process.env.MONGODB_CONNECT_URI, {
     return Promise.all([
         seedingUsers(),
         seedingCategories(),
+        seedingEnquiries(),
     ]);
 
 }).then(function (args) {
@@ -94,4 +95,18 @@ function seedingPosts(authors, postCategories) {
     return Post.create(posts);
 }
 
+// Faker creating 50 enquiries
+function seedingEnquiries() {
+    const Enquiry = mongoose.model('Enquiry', enquirySchema);
 
+    const enquiries = [];
+    for (let i = 0; i < 50; ++i) {
+        enquiries.push({
+            name: faker.name.findName(),
+            email: faker.internet.email(),
+            phone: faker.phone.phoneNumber(),
+            content: faker.lorem.paragraphs(),
+        });
+    }
+    return Enquiry.create(enquiries);
+}
