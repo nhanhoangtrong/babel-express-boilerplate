@@ -21,7 +21,7 @@
     "chai-http": "^3.0.0",
     "chalk": "^2.3.0",
     "connect-mongo": "^2.0.0",
-    "cookie-parser": "^1.4.3",
+    "cookie-parser": "^1.4.5",
     "cors": "^2.8.3",
     "dotenv": "^4.0.0",
     "errorhandler": "^1.5.0",
