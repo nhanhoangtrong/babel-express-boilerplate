@@ -760,9 +760,10 @@ async-limiter@~1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/async-limiter/-/async-limiter-1.0.0.tgz#78faed8c3d074ab81f22b4e985d79e8738f720f8"
 
-async@2.1.4:
-  version "2.1.4"
-  resolved "https://registry.yarnpkg.com/async/-/async-2.1.4.tgz#2d2160c7788032e4dd6cbe2502f1f9a2c8f6cde4"
+async@2.6.0:
+  version "2.6.0"
+  resolved "https://registry.yarnpkg.com/async/-/async-2.6.0.tgz#61a29abb6fcc026fea77e56d1c6ec53a795951f4"
+  integrity sha512-xAfGg1/NTLBBKlHFmnd7PlmUW9KhVQIUuSrYem9xzFUZy13ScvtyGGejaae9iAVRiRq9+Cx7DPFaAAhCpyxyPw==
   dependencies:
     lodash "^4.14.0"
 
@@ -2876,7 +2877,24 @@ mongodb-core@2.1.17:
     bson "~1.0.4"
     require_optional "~1.0.0"
 
-mongodb@2.2.33, mongodb@^2.0.36:
+mongodb-core@2.1.18:
+  version "2.1.18"
+  resolved "https://registry.yarnpkg.com/mongodb-core/-/mongodb-core-2.1.18.tgz#4c46139bdf3a1f032ded91db49f38eec01659050"
+  integrity sha1-TEYTm986HwMt7ZHbSfOO7AFlkFA=
+  dependencies:
+    bson "~1.0.4"
+    require_optional "~1.0.0"
+
+mongodb@2.2.34:
+  version "2.2.34"
+  resolved "https://registry.yarnpkg.com/mongodb/-/mongodb-2.2.34.tgz#a34f59bbeb61754aec432de72c3fe21526a44c1a"
+  integrity sha1-o09Zu+thdUrsQy3nLD/iFSakTBo=
+  dependencies:
+    es6-promise "3.2.1"
+    mongodb-core "2.1.18"
+    readable-stream "2.2.7"
+
+mongodb@^2.0.36:
   version "2.2.33"
   resolved "https://registry.yarnpkg.com/mongodb/-/mongodb-2.2.33.tgz#b537c471d34a6651b48f36fdbf29750340e08b50"
   dependencies:
@@ -2884,17 +2902,18 @@ mongodb@2.2.33, mongodb@^2.0.36:
     mongodb-core "2.1.17"
     readable-stream "2.2.7"
 
-mongoose@^4.10.4:
-  version "4.13.6"
-  resolved "https://registry.yarnpkg.com/mongoose/-/mongoose-4.13.6.tgz#48102f0b0d797a9bd273e581eef16d0505ef3d79"
+mongoose@^4.13.20:
+  version "4.13.20"
+  resolved "https://registry.yarnpkg.com/mongoose/-/mongoose-4.13.20.tgz#7d6cdc35eca23306bb7388a74a08be1dc1487a7d"
+  integrity sha512-lyOoXg/+S8VmW7gh816H9QcBSqLMCOXecVxflES729lb3qAU3W/AHLbCpHSIPFDJW5mXs4z5sCsjuLBa56w1Jg==
   dependencies:
-    async "2.1.4"
+    async "2.6.0"
     bson "~1.0.4"
     hooks-fixed "2.0.2"
     kareem "1.5.0"
     lodash.get "4.4.2"
-    mongodb "2.2.33"
-    mpath "0.3.0"
+    mongodb "2.2.34"
+    mpath "0.5.1"
     mpromise "0.5.5"
     mquery "2.3.3"
     ms "2.0.0"
@@ -2912,9 +2931,10 @@ morgan@^1.8.2:
     on-finished "~2.3.0"
     on-headers "~1.0.1"
 
-mpath@0.3.0:
-  version "0.3.0"
-  resolved "https://registry.yarnpkg.com/mpath/-/mpath-0.3.0.tgz#7a58f789e9b5fd3c94520634157960f26bd5ef44"
+mpath@0.5.1:
+  version "0.5.1"
+  resolved "https://registry.yarnpkg.com/mpath/-/mpath-0.5.1.tgz#17131501f1ff9e6e4fbc8ffa875aa7065b5775ab"
+  integrity sha512-H8OVQ+QEz82sch4wbODFOz+3YQ61FYz/z3eJ5pIdbMEaUzDqA268Wd+Vt4Paw9TJfvDgVKaayC0gBzMIw2jhsg==
 
 mpromise@0.5.5:
   version "0.5.5"
